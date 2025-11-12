@@ -15,7 +15,7 @@ enum class HexEdgeDirection {
   TOP_RIGHT,
 };
 
-const std::vector<HexEdgeDirection> HEX_EDGE_DIRECTIONS{
+const std::vector HEX_EDGE_DIRECTIONS{
     HexEdgeDirection::BOTTOM_RIGHT, HexEdgeDirection::BOTTOM,
     HexEdgeDirection::BOTTOM_LEFT,  HexEdgeDirection::TOP_LEFT,
     HexEdgeDirection::TOP,          HexEdgeDirection::TOP_RIGHT,
@@ -141,10 +141,10 @@ struct HexCoord2 {
 
   bool operator==(const HexCoord2 &rhs) const;
   HexCoord2 operator+(const HexCoord2 &rhs) const;
-  HexCoord2
+  [[nodiscard]] HexCoord2
   get_neighbouring_hex_coord(HexEdgeDirection neighbour_direction) const;
-  EdgeCoord get_edge_coord(HexEdgeDirection edge_direction) const;
-  CornerCoord get_corner_coord(HexCornerDirection corner_direction) const;
+  [[nodiscard]] EdgeCoord get_edge_coord(HexEdgeDirection edge_direction) const;
+  [[nodiscard]] CornerCoord get_corner_coord(HexCornerDirection corner_direction) const;
 };
 
 struct EdgeCoord {
@@ -160,8 +160,6 @@ struct CornerCoord {
 };
 
 } // namespace Map
-
-namespace std {
 
 // HexCoord2
 std::string to_string(const Map::HexCoord2 &coord);
@@ -180,7 +178,6 @@ std::string to_string(const Map::CornerCoord &corner_coord);
 
 std::string to_string(const Map::CornerEdgeDirection &corner_edge_direction);
 
-}; // namespace std
 
 std::ostream &operator<<(std::ostream &output_stream,
                          const Map::HexCoord2 &coord);

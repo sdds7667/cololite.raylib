@@ -1,8 +1,6 @@
 #import <Cocoa/Cocoa.h>
 #include <screensize.hh>
 
-
-
 Vector2 MacOS::get_screen_size() {
     Vector2 result;
     @autoreleasepool {

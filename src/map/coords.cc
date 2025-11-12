@@ -29,9 +29,9 @@ HexCornerDirection edge_direction_to_corner_direction(
   case direction2:                                                             \
     return corner_direction2;                                                  \
   default:                                                                     \
-    throw std::runtime_error("This edge " + std::to_string(edge_direction) +   \
+    throw std::runtime_error("This edge " + to_string(edge_direction) +   \
                              "does not support this corner." +                 \
-                             std::to_string(edge_corner_direction));           \
+                             to_string(edge_corner_direction));           \
     break;                                                                     \
   }
 
@@ -60,6 +60,8 @@ HexCornerDirection edge_direction_to_corner_direction(
     CORNER_EDGE_TO_HEX_CORNER(
         CornerEdgeDirection::BOTTOM_RIGHT, HexCornerDirection::RIGHT,
         CornerEdgeDirection::TOP_LEFT, HexCornerDirection::TOP_RIGHT);
+  default:
+    throw std::runtime_error("Unknown edge direction");
   }
 #undef CORNER_EDGE_TO_HEX_CORNER
 };
@@ -87,6 +89,8 @@ HexCoord2 HexCoord2::get_neighbouring_hex_coord(
     return {q - 1, r + 1};
   case HexEdgeDirection::TOP_LEFT:
     return {q - 1, r};
+  default:
+    throw std::runtime_error("Unknown edge direction");
   }
 }
 
@@ -110,7 +114,6 @@ bool CornerCoord::operator==(const CornerCoord &other) const {
 
 } // namespace Map
 
-namespace std {
 std::string to_string(const Map::HexCoord2 &coord) {
   return "HexCoord2<q=" + std::to_string(coord.q) + ", " +
          "r = " + std::to_string(coord.r) + ">";
@@ -131,12 +134,14 @@ std::string to_string(const Map::HexEdgeDirection &edge_direction) {
     return "EdgeDir<TOP = " + index + ">";
   case Map::HexEdgeDirection::TOP_RIGHT:
     return "EdgeDir<TOP_RIGHT = " + index + ">";
+  default:
+      throw std::runtime_error("Unknown edge direction");
   }
 }
 
 std::string to_string(const Map::EdgeCoord &edge_coord) {
-  return "EdgeCoord<hex_coord=" + std::to_string(edge_coord.hex_coord) +
-         ", edge_direction=" + std::to_string(edge_coord.edge_direction) + ">";
+  return "EdgeCoord<hex_coord=" + to_string(edge_coord.hex_coord) +
+         ", edge_direction=" + to_string(edge_coord.edge_direction) + ">";
 };
 
 std::string to_string(const Map::HexCornerDirection &corner_direction) {
@@ -154,16 +159,18 @@ std::string to_string(const Map::HexCornerDirection &corner_direction) {
     return "CornerDir<TOP_RIGHT = " + index + ">";
   case Map::HexCornerDirection::RIGHT:
     return "CornerDir<RIGHT = " + index + ">";
+  default:
+    throw std::runtime_error("Unknown corner direction");
   }
 }
 
 std::string to_string(const Map::CornerCoord &corner_coord) {
-  return "CornerCoord<hex_coord=" + std::to_string(corner_coord.hex_coord) +
-         ", corner_direction=" + std::to_string(corner_coord.corner_direction) +
+  return "CornerCoord<hex_coord=" + to_string(corner_coord.hex_coord) +
+         ", corner_direction=" + to_string(corner_coord.corner_direction) +
          ">";
 };
 
-string to_string(const Map::CornerEdgeDirection &corner_edge_direction) {
+std::string to_string(const Map::CornerEdgeDirection &corner_edge_direction) {
   switch (corner_edge_direction) {
   case Map::CornerEdgeDirection::RIGHT:
     return "CornerEdgeDirection::RIGHT";
@@ -177,32 +184,33 @@ string to_string(const Map::CornerEdgeDirection &corner_edge_direction) {
     return "CornerEdgeDirection::TOP_LEFT";
   case Map::CornerEdgeDirection::TOP_RIGHT:
     return "CornerEdgeDirection::TOP_RIGHT";
+  default:
+      throw std::runtime_error("Unknown corner edge direction");
   }
 }
 
-} // namespace std
 
 std::ostream &operator<<(std::ostream &output_stream,
                          const Map::HexCoord2 &coord) {
-  return output_stream << std::to_string(coord);
+  return output_stream << to_string(coord);
 };
 
 std::ostream &operator<<(std::ostream &output_stream,
                          const Map::HexCornerDirection &corner_direction) {
-  return output_stream << std::to_string(corner_direction);
+  return output_stream << to_string(corner_direction);
 };
 
 std::ostream &operator<<(std::ostream &output_stream,
                          const Map::HexEdgeDirection &edge_direction) {
-  return output_stream << std::to_string(edge_direction);
+  return output_stream << to_string(edge_direction);
 };
 
 std::ostream &operator<<(std::ostream &output_stream,
                          const Map::EdgeCoord &edge_coord) {
-  return output_stream << std::to_string(edge_coord);
+  return output_stream << to_string(edge_coord);
 };
 
 std::ostream &operator<<(std::ostream &output_stream,
                          const Map::CornerCoord &corner_coord) {
-  return output_stream << std::to_string(corner_coord);
+  return output_stream << to_string(corner_coord);
 };
