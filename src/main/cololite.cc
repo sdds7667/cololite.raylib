@@ -1,4 +1,4 @@
 
 #include "engine.hh"
 
-int main(void) { Engine::main_loop(); }
+int main() { Engine::main_loop(); }

@@ -20,7 +20,7 @@ namespace Map {
 
   CornerCoord
   Map::get_normalized_corner_coord(const CornerCoord &raw_coord) const {
-    HexCoord2 potential_coord{};
+    HexCoord2 potential_coord;
     HexCoord2 normalized_coord = raw_coord.hex_coord;
     bool assigned = false;
     HexCornerDirection normalized_corner_direction = raw_coord.corner_direction;
@@ -180,12 +180,12 @@ namespace Map {
   Map Map::build_map_of_size(size_t map_size) {
     MapBounds map_bounds = MapBounds::from_radius(map_size);
     Map map{map_bounds};
-    for (const auto &coord: MapCoords(map_size)) {
-      Hex *hex = new Hex();
+    for (const auto &coord: MapCoords(static_cast<int>(map_size))) {
+      auto hex = new Hex();
       map.hexes.insert(std::make_pair(coord, hex));
 
       for (const auto &corner_direction: HEX_CORNER_DIRECTIONS) {
-        CornerCoord raw_corner_coord = CornerCoord{coord, corner_direction};
+        auto raw_corner_coord = CornerCoord{coord, corner_direction};
         CornerCoord normalized_corner_coord =
             map.get_normalized_corner_coord(raw_corner_coord);
         Corner *corner;
@@ -202,7 +202,7 @@ namespace Map {
       }
 
       for (const auto &edge_direction: HEX_EDGE_DIRECTIONS) {
-        EdgeCoord raw_edge_coord = EdgeCoord{coord, edge_direction};
+        auto raw_edge_coord = EdgeCoord{coord, edge_direction};
         EdgeCoord normalized_edge_coord =
             map.get_normalized_edge_coord(raw_edge_coord);
         Edge *edge;
@@ -212,7 +212,7 @@ namespace Map {
         } else {
           edge = new Edge();
           map.edges.insert(std::make_pair(normalized_edge_coord, edge));
-          // map to neigbouring corners:
+          // map to neighbouring corners:
           for (const auto &edge_to_corner_direction:
                EDGE_TO_CORNER_DIRECTION_MAPPING[static_cast<int>(
                  edge_direction)]) {
