@@ -111,7 +111,7 @@ namespace Map {
         TOP_RIGHT,
     };
 
-    const std::vector<HexCornerDirection> HEX_CORNER_DIRECTIONS{
+    const std::vector HEX_CORNER_DIRECTIONS{
             HexCornerDirection::RIGHT, HexCornerDirection::BOTTOM_RIGHT, HexCornerDirection::BOTTOM_LEFT,
             HexCornerDirection::LEFT,  HexCornerDirection::TOP_LEFT,     HexCornerDirection::TOP_RIGHT,
     };
@@ -149,23 +149,12 @@ namespace Map {
 
 } // namespace Map
 
-// HexCoord2
 std::string to_string(const Map::HexCoord2 &coord);
-
-// EdgeDirection
 std::string to_string(const Map::HexEdgeDirection &edge_direction);
-
-// CornerDirection
 std::string to_string(const Map::HexCornerDirection &corner_direction);
-
-// EdgeCoord
 std::string to_string(const Map::EdgeCoord &edge_coord);
-
-// CornerCoord
 std::string to_string(const Map::CornerCoord &corner_coord);
-
 std::string to_string(const Map::CornerEdgeDirection &corner_edge_direction);
-
 
 std::ostream &operator<<(std::ostream &output_stream, const Map::HexCoord2 &coord);
 std::ostream &operator<<(std::ostream &output_stream, const Map::HexCornerDirection &corner_direction);

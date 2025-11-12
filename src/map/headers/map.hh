@@ -9,7 +9,7 @@ namespace Map {
     struct Corner;
     struct Edge;
 
-    enum Resource { NONE, WOOD, BRICK, SHEEP, WHEAT, STONE };
+    enum class Resource { NONE, WOOD, BRICK, SHEEP, WHEAT, STONE };
 
     struct Hex {
         std::unordered_map<HexCornerDirection, Corner *> corners;
@@ -71,19 +71,12 @@ namespace Map {
             using reference = const HexCoord2 &;
 
             explicit MapCoordsIterator(int size);
-
             MapCoordsIterator(int size, int r, int q);
-
             reference operator*() const;
-
             pointer operator->() const;
-
             MapCoordsIterator &operator++();
-
             MapCoordsIterator operator++(int);
-
             friend bool operator==(const MapCoordsIterator &a, const MapCoordsIterator &b);
-
             friend bool operator!=(const MapCoordsIterator &a, const MapCoordsIterator &b);
 
         private:
