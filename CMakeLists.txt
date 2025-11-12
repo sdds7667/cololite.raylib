@@ -1,8 +1,8 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.15..4.12)
 project(cololite)
 
 ## Project Settings
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
@@ -64,12 +64,11 @@ if (APPLE)
     target_link_libraries(${PROJECT_NAME} PRIVATE "-framework OpenGL")
 endif()
 
-target_link_libraries(${PROJECT_NAME} PRIVATE raylib)
-
 # Enable Testing
 enable_testing()
 
 ## Internal Libraries
 add_subdirectory(src/main)
 add_subdirectory(src/map)
-
+add_subdirectory(src/engine)
+add_subdirectory(src/macosspecific)
