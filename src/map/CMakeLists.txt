@@ -7,11 +7,12 @@ target_sources(map PRIVATE ${SOURCE_FILES} ${HEADER_FILES})
 
 # Export symbols for shared library
 set_target_properties(map PROPERTIES
-    CXX_VISIBILITY_PRESET default
-    VISIBILITY_INLINES_HIDDEN OFF
+        CXX_VISIBILITY_PRESET default
+        VISIBILITY_INLINES_HIDDEN OFF
 )
 
 target_include_directories(map PUBLIC headers)
+target_link_libraries(map PRIVATE utils)
 
 
 ## Map Tests

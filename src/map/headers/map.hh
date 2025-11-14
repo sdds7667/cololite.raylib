@@ -3,6 +3,7 @@
 #include <unordered_map>
 #include "coords.hh"
 #include "coords_hash.hh"
+#include "../../utils/headers/observer.hh"
 
 namespace Map {
     struct Hex;
@@ -18,9 +19,16 @@ namespace Map {
         int number;
     };
 
-    struct Corner {
+    struct Corner : Observable {
         std::unordered_map<HexCornerDirection, Hex *> hexes;
         std::unordered_map<CornerEdgeDirection, Edge *> edges;
+
+        [[nodiscard]] bool get_is_highlighted() const;
+
+        void set_is_highlighted(bool highlighted);
+
+    private:
+        bool is_highlighted = false;
     };
 
     struct Edge {
@@ -29,8 +37,7 @@ namespace Map {
     };
 
     struct MapBounds {
-        HexCoord2 min_bounds;
-        HexCoord2 max_bounds;
+        size_t radius;
 
         static MapBounds from_radius(size_t radius);
 
@@ -54,6 +61,10 @@ namespace Map {
         static Map build_map_of_size(size_t map_size);
 
         [[nodiscard]] const std::unordered_map<HexCoord2, Hex *> get_hexes() const;
+
+        [[nodiscard]] const std::unordered_map<CornerCoord, Corner *> get_corners() const;
+
+        [[nodiscard]] const std::unordered_map<EdgeCoord, Edge *> get_edges() const;
     };
 
     class MapCoords {
@@ -71,12 +82,19 @@ namespace Map {
             using reference = const HexCoord2 &;
 
             explicit MapCoordsIterator(int size);
+
             MapCoordsIterator(int size, int r, int q);
+
             reference operator*() const;
+
             pointer operator->() const;
+
             MapCoordsIterator &operator++();
+
             MapCoordsIterator operator++(int);
+
             friend bool operator==(const MapCoordsIterator &a, const MapCoordsIterator &b);
+
             friend bool operator!=(const MapCoordsIterator &a, const MapCoordsIterator &b);
 
         private:

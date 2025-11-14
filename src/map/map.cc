@@ -10,12 +10,22 @@
 
 namespace Map {
     bool MapBounds::is_within_bounds(const HexCoord2 &coord) const {
-        return coord.r > min_bounds.r && coord.q > min_bounds.q && coord.r < max_bounds.r && coord.q < max_bounds.q;
+        const int distance = (std::abs(coord.q) + std::abs(coord.q + coord.r) + std::abs(coord.r)) / 2;
+        return distance <= radius;
     }
 
+    bool Corner::get_is_highlighted() const {
+        return is_highlighted;
+    }
+
+    void Corner::set_is_highlighted(bool highlighted) {
+        is_highlighted = highlighted;
+        broadcast_change({{"is_highlighted", reinterpret_cast<void *>(is_highlighted)}});
+    }
+
+
     MapBounds MapBounds::from_radius(std::size_t radius) {
-        const int bounds = static_cast<int>(radius) - 1;
-        return {.min_bounds = {.q = -bounds, .r = -bounds}, .max_bounds = {.q = +bounds, .r = +bounds}};
+        return MapBounds{radius};
     };
 
     CornerCoord Map::get_normalized_corner_coord(const CornerCoord &raw_coord) const {
@@ -51,7 +61,7 @@ namespace Map {
             case HexCornerDirection::TOP_RIGHT:
                 ASSIGN_CORNER_COORD_IF_POSSIBLE(HexEdgeDirection::TOP, HexCornerDirection::BOTTOM_RIGHT);
                 if (!assigned) {
-                    ASSIGN_CORNER_COORD_IF_POSSIBLE(HexEdgeDirection::TOP, HexCornerDirection::BOTTOM_LEFT);
+                    ASSIGN_CORNER_COORD_IF_POSSIBLE(HexEdgeDirection::TOP_RIGHT, HexCornerDirection::LEFT);
                 }
                 break;
         }
@@ -88,14 +98,19 @@ namespace Map {
         return {.hex_coord = normalized_coord, .edge_direction = normalized_edge_direction};
     }
 
-    MapCoords::MapCoords(int size) : m_size(size) {}
+    MapCoords::MapCoords(int size) : m_size(size) {
+    }
 
-    MapCoords::MapCoordsIterator::MapCoordsIterator(int size) :
-        size(size), r(-size), max_r(size), q(-size + abs(std::min(r, 0))), max_q(size - std::max(0, r)),
-        current_coord{.q = q, .r = r} {}
+    MapCoords::MapCoordsIterator::MapCoordsIterator(int size) : size(size), r(-size), max_r(size),
+                                                                q(-size + abs(std::min(r, 0))),
+                                                                max_q(size - std::max(0, r)),
+                                                                current_coord{.q = q, .r = r} {
+    }
 
-    MapCoords::MapCoordsIterator::MapCoordsIterator(int size, int r, int q) :
-        size(size), r(r), max_r(size), q(q), max_q(size - std::max(0, r)), current_coord{r, q} {}
+    MapCoords::MapCoordsIterator::MapCoordsIterator(int size, int r, int q) : size(size), r(r), max_r(size), q(q),
+                                                                              max_q(size - std::max(0, r)),
+                                                                              current_coord{r, q} {
+    }
 
     MapCoords::MapCoordsIterator::reference MapCoords::MapCoordsIterator::operator*() const { return current_coord; }
 
@@ -139,20 +154,23 @@ namespace Map {
         return a.q != b.q || a.r != b.r;
     }
 
-    Map::Map(const MapBounds &map_bounds) : map_bounds(map_bounds) {}
+    Map::Map(const MapBounds &map_bounds) : map_bounds(map_bounds) {
+    }
 
     Map Map::build_map_of_size(size_t map_size) {
-        MapBounds map_bounds = MapBounds::from_radius(map_size);
+        const MapBounds map_bounds = MapBounds::from_radius(map_size);
         std::vector numbers{2, 3, 3, 4, 4, 5, 5, 6, 6, 8, 8, 9, 9, 10, 10, 11, 11, 12};
-        std::vector resources{Resource::WHEAT, Resource::WHEAT, Resource::WHEAT, Resource::WHEAT, Resource::WOOD,
-                              Resource::WOOD,  Resource::WOOD,  Resource::WOOD,  Resource::SHEEP, Resource::SHEEP,
-                              Resource::SHEEP, Resource::SHEEP, Resource::BRICK, Resource::BRICK, Resource::BRICK,
-                              Resource::STONE, Resource::STONE, Resource::STONE};
+        std::vector resources{
+            Resource::WHEAT, Resource::WHEAT, Resource::WHEAT, Resource::WHEAT, Resource::WOOD,
+            Resource::WOOD, Resource::WOOD, Resource::WOOD, Resource::SHEEP, Resource::SHEEP,
+            Resource::SHEEP, Resource::SHEEP, Resource::BRICK, Resource::BRICK, Resource::BRICK,
+            Resource::STONE, Resource::STONE, Resource::STONE
+        };
         const unsigned seed1 = std::chrono::system_clock::now().time_since_epoch().count();
         auto rng = std::default_random_engine{seed1};
         std::ranges::shuffle(numbers, rng);
         std::ranges::shuffle(resources, rng);
-        std::vector<std::pair<Resource, int>> random_resources{};
+        std::vector<std::pair<Resource, int> > random_resources{};
         random_resources.reserve(numbers.size());
         for (int i = 0; i < numbers.size(); i++) {
             random_resources.emplace_back(resources[i], numbers[i]);
@@ -212,4 +230,6 @@ namespace Map {
     }
 
     const std::unordered_map<HexCoord2, Hex *> Map::get_hexes() const { return hexes; }
+    const std::unordered_map<CornerCoord, Corner *> Map::get_corners() const { return corners; }
+    const std::unordered_map<EdgeCoord, Edge *> Map::get_edges() const { return edges; }
 } // namespace Map
