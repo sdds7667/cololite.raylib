@@ -8,10 +8,10 @@
 
 namespace Engine {
     BaseAnimation::BaseAnimation(const float animation_speed_in_s, const float starting_value,
-                                 const float ending_value
+                                 const float ending_value, OnAnimationFinished on_finished
     ) : animation_speed_in_s(animation_speed_in_s),
         animation_value(0.0f), starting_value(starting_value),
-        ending_value(ending_value), current_value(starting_value) {
+        ending_value(ending_value), current_value(starting_value), on_finished(on_finished) {
     }
 
     BaseAnimation::~BaseAnimation() = default;
@@ -62,12 +62,16 @@ namespace Engine {
         animation_value = 0.0f;
     }
 
+    OnAnimationFinished BaseAnimation::get_on_finished() const {
+        return on_finished;
+    }
+
     float BaseAnimation::get_current_value() const {
         return current_value;
     }
 
     LinearAnimation::LinearAnimation(float animation_speed_in_s, float starting_value,
-                                     float ending_value) : BaseAnimation(
-        animation_speed_in_s, starting_value, ending_value) {
+                                     float ending_value, OnAnimationFinished on_animation_finished) : BaseAnimation(
+        animation_speed_in_s, starting_value, ending_value, on_animation_finished) {
     }
 }

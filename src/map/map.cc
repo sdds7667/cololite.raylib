@@ -14,15 +14,6 @@ namespace Map {
         return distance <= radius;
     }
 
-    bool Corner::get_is_highlighted() const {
-        return is_highlighted;
-    }
-
-    void Corner::set_is_highlighted(bool highlighted) {
-        is_highlighted = highlighted;
-        broadcast_change({{"is_highlighted", reinterpret_cast<void *>(is_highlighted)}});
-    }
-
 
     MapBounds MapBounds::from_radius(std::size_t radius) {
         return MapBounds{radius};
@@ -209,7 +200,7 @@ namespace Map {
                 } else {
                     edge = new Edge();
                     map.edges.insert(std::make_pair(normalized_edge_coord, edge));
-                    // map to neighbouring corners:
+                    // map to neighboring corners:
                     for (const auto &edge_to_corner_direction:
                          EDGE_TO_CORNER_DIRECTION_MAPPING[static_cast<int>(edge_direction)]) {
                         const auto corner_direction =
@@ -229,7 +220,7 @@ namespace Map {
         return map;
     }
 
-    const std::unordered_map<HexCoord2, Hex *> Map::get_hexes() const { return hexes; }
-    const std::unordered_map<CornerCoord, Corner *> Map::get_corners() const { return corners; }
-    const std::unordered_map<EdgeCoord, Edge *> Map::get_edges() const { return edges; }
+    const std::unordered_map<HexCoord2, Hex *> &Map::get_hexes() const { return hexes; }
+    const std::unordered_map<CornerCoord, Corner *> &Map::get_corners() const { return corners; }
+    const std::unordered_map<EdgeCoord, Edge *> &Map::get_edges() const { return edges; }
 } // namespace Map

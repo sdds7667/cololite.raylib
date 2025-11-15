@@ -3,6 +3,7 @@
 #include <unordered_map>
 #include "coords.hh"
 #include "coords_hash.hh"
+#include "game.hh"
 #include "../../utils/headers/observer.hh"
 
 namespace Map {
@@ -19,13 +20,10 @@ namespace Map {
         int number;
     };
 
-    struct Corner : Observable {
+    struct Corner {
         std::unordered_map<HexCornerDirection, Hex *> hexes;
         std::unordered_map<CornerEdgeDirection, Edge *> edges;
-
-        [[nodiscard]] bool get_is_highlighted() const;
-
-        void set_is_highlighted(bool highlighted);
+        House *house = nullptr;
 
     private:
         bool is_highlighted = false;
@@ -34,6 +32,7 @@ namespace Map {
     struct Edge {
         std::unordered_map<HexEdgeDirection, Hex *> hexes;
         std::unordered_map<CornerEdgeDirection, Corner *> corners;
+        Road *road = nullptr;
     };
 
     struct MapBounds {
@@ -60,11 +59,11 @@ namespace Map {
 
         static Map build_map_of_size(size_t map_size);
 
-        [[nodiscard]] const std::unordered_map<HexCoord2, Hex *> get_hexes() const;
+        [[nodiscard]] const std::unordered_map<HexCoord2, Hex *> &get_hexes() const;
 
-        [[nodiscard]] const std::unordered_map<CornerCoord, Corner *> get_corners() const;
+        [[nodiscard]] const std::unordered_map<CornerCoord, Corner *> &get_corners() const;
 
-        [[nodiscard]] const std::unordered_map<EdgeCoord, Edge *> get_edges() const;
+        [[nodiscard]] const std::unordered_map<EdgeCoord, Edge *> &get_edges() const;
     };
 
     class MapCoords {

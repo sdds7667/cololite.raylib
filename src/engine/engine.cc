@@ -1,8 +1,10 @@
 
 #include "engine.hh"
 #include <iostream>
+#include <ranges>
 
 #include "actor.hh"
+#include "game_sequence.hh"
 #include "map_actors.hh"
 #include "raylib.h"
 #include "raymath.h"
@@ -133,26 +135,6 @@ namespace Engine {
                        static_cast<float>(render_resources.map_font.baseSize), 0, WHITE);
             // DrawText(number.c_str(), final_text_position.x, final_text_position.y, 32, WHITE);
         }
-
-        for (const auto [coord, edge]: map.get_edges()) {
-            const auto hex_position = compute_hex_center_position(render_settings.full_hex_size, coord.hex_coord);
-            const auto edge_direction = get_direction_for_edge(coord.edge_direction);
-            const auto edge_position_scaling = Vector2{.x = cos(edge_direction), .y = sin(edge_direction)};
-            const auto edge_delta = Vector2Scale(edge_position_scaling, render_settings.full_hex_size);
-            const auto edge_position = Vector2Add(hex_position, edge_delta);
-
-            float dir = static_cast<float>(coord.edge_direction);
-            float move_dir = (PI / 3.0f) * (dir + 2.0);
-
-            Rectangle rectangle{
-                .x = edge_position.x + cos(move_dir) * render_settings.hex_size * 0.90f / 3.0f,
-                .y = edge_position.y + sin(move_dir) * render_settings.hex_size * 0.90f / 3.0f,
-                .width = render_settings.full_hex_size - 1.80f * render_settings.hex_size * 1.0f / 3.0f,
-                .height = 19.0f
-            };
-            DrawRectanglePro(rectangle, {0.0f, 9.5f}, 60.0f * (static_cast<float>(coord.edge_direction) + 2.0f),
-                             color_scheme.mapBorder);
-        }
     }
 
 
@@ -221,7 +203,39 @@ namespace Engine {
 
         std::vector<Actor *> actors;
         AnimationSequence animation_sequence{};
+        Game::GameSequence game_sequence;
+        game_sequence.emplace_back(Game::GamePhaseParameterized::for_no_parameter(Game::GamePhase::FREE_ROAD));
+        game_sequence.emplace_back(Game::GamePhaseParameterized::for_no_parameter(Game::GamePhase::FREE_BUILDING));
+        game_sequence.emplace_back(Game::GamePhaseParameterized::for_no_parameter(Game::GamePhase::FREE_ROAD));
+        game_sequence.emplace_back(Game::GamePhaseParameterized::for_no_parameter(Game::GamePhase::FREE_BUILDING));
+        game_sequence.emplace_back(Game::GamePhaseParameterized::for_no_parameter(Game::GamePhase::FREE_ROAD));
+        game_sequence.emplace_back(Game::GamePhaseParameterized::for_no_parameter(Game::GamePhase::FREE_BUILDING));
+        game_sequence.emplace_back(Game::GamePhaseParameterized::for_no_parameter(Game::GamePhase::FREE_ROAD));
+        game_sequence.emplace_back(Game::GamePhaseParameterized::for_no_parameter(Game::GamePhase::FREE_BUILDING));
+        game_sequence.emplace_back(Game::GamePhaseParameterized::for_no_parameter(Game::GamePhase::FREE_ROAD));
+        game_sequence.emplace_back(Game::GamePhaseParameterized::for_no_parameter(Game::GamePhase::FREE_BUILDING));
+        game_sequence.emplace_back(Game::GamePhaseParameterized::for_no_parameter(Game::GamePhase::FREE_ROAD));
+        game_sequence.emplace_back(Game::GamePhaseParameterized::for_no_parameter(Game::GamePhase::FREE_BUILDING));
 
+        Game::GamePhaseParameterized do_nothing = Game::GamePhaseParameterized::for_no_parameter(
+            Game::GamePhase::DO_NOTHING);
+
+        auto *game_phase = &do_nothing;
+        float time_waited = 0.0f;
+        std::vector<Map::Edge *> edges_to_highlight;
+
+
+        for (const auto [coord, edge]: map.get_edges()) {
+            const auto hex_position = compute_hex_center_position(render_settings.full_hex_size, coord.hex_coord);
+            const auto edge_direction = get_direction_for_edge(coord.edge_direction);
+            const auto edge_position_scaling = Vector2{.x = cos(edge_direction), .y = sin(edge_direction)};
+            const auto edge_delta = Vector2Scale(edge_position_scaling, render_settings.full_hex_size);
+            const auto edge_position = Vector2Add(hex_position, edge_delta);
+
+
+            actors.push_back(new EdgeActor(render_settings, render_resources, color_scheme, edge, coord,
+                                           edge_position));
+        }
         for (auto [coord, corner]: map.get_corners()) {
             const auto hex_position = compute_hex_center_position(render_settings.full_hex_size, coord.hex_coord);
             const auto corner_direction = get_direction_for_corner(coord.corner_direction);
@@ -229,23 +243,124 @@ namespace Engine {
             const auto corner_delta = Vector2Scale(corner_position_scaling, render_settings.full_hex_size);
             const auto corner_position = Vector2Add(hex_position, corner_delta);
 
-            actors.push_back(new CornerActor(render_settings, color_scheme, corner, coord, corner_position));
+            actors.push_back(new CornerActor(render_settings, render_resources, color_scheme, corner, coord,
+                                             corner_position));
         }
 
         while (!WindowShouldClose()) {
-            if (IsKeyReleased(KEY_SPACE)) {
-                for (auto actor: actors) {
-                    auto *corner_actor = dynamic_cast<CornerActor *>(actor);
-                    bool is_highlighted = corner_actor->get_highlighted();
-                    corner_actor->set_highlighted(!is_highlighted);
+            while (game_phase->get_phase() == Game::GamePhase::DO_NOTHING) {
+                if (!game_sequence.empty()) {
+                    if (auto &action = game_sequence[game_sequence.size() - 1]; action.is_finished()) {
+                        game_sequence.pop_back();
+                    } else {
+                        game_phase = action.get_next_phase();
+                        if (game_phase->get_phase() == Game::GamePhase::FREE_BUILDING) {
+                            for (auto actor: actors) {
+                                auto *corner_actor = dynamic_cast<CornerActor *>(actor);
+                                if (corner_actor == nullptr) continue;
+                                auto corner = corner_actor->get_corner();
+                                if (corner->house == nullptr) {
+                                    bool free_neighbors = true;
+                                    for (auto edge: corner->edges | std::views::values) {
+                                        for (auto corner2: edge->corners | std::views::values) {
+                                            if (corner2->house != nullptr) {
+                                                free_neighbors = false;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    if (free_neighbors) {
+                                        corner_actor->set_highlighted(true);
+                                    }
+                                }
+                            }
+                        } else if (game_phase->get_phase() == Game::GamePhase::WAIT_FOR_TIME) {
+                            time_waited = 0.0f;
+                        } else if (game_phase->get_phase() == Game::GamePhase::FREE_ROAD) {
+                            for (auto actor: actors) {
+                                auto *edge_actor = dynamic_cast<EdgeActor *>(actor);
+                                if (edge_actor == nullptr) continue;
+                                for (auto edge: edges_to_highlight) {
+                                    if (edge_actor->get_edge() == edge) {
+                                        if (edge->road == nullptr)
+                                            edge_actor->set_highlighted(true);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    break;
+                }
+            }
+            if (game_phase->get_phase() == Game::GamePhase::FREE_BUILDING) {
+                // get clicks
+                if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+                    Vector2 mouse_position = GetScreenToWorld2D(GetMousePosition(), camera);
+                    std::cout << mouse_position.x << " " << mouse_position.y << "\n";
+                    for (auto actor: actors) {
+                        auto *corner_actor = dynamic_cast<CornerActor *>(actor);
+                        if (corner_actor == nullptr)
+                            continue;
+                        if (!corner_actor->is_clicked(mouse_position))
+                            continue;
+                        if (!corner_actor->get_highlighted()) {
+                            // display error message
+                            break;
+                        }
+                        auto *corner = corner_actor->get_corner();
+                        edges_to_highlight.clear();
+                        for (auto edge: corner->edges | std::views::values) {
+                            edges_to_highlight.push_back(edge);
+                        }
+                        corner_actor->set_house(new House());
+                        for (auto actor2: actors) {
+                            auto *corner_actor2 = dynamic_cast<CornerActor *>(actor2);
+                            if (corner_actor2 == nullptr)
+                                continue;
+                            corner_actor2->set_highlighted(false);
+                        }
+                        game_phase = &do_nothing;
+                        break;
+                    }
+                }
+            } else if (game_phase->get_phase() == Game::GamePhase::WAIT_FOR_TIME) {
+                time_waited += GetFrameTime();
+                if (time_waited >= game_phase->get_wait_for_time_parameter()->time_in_s) {
+                    game_phase->cleanup();
+                    game_phase = &do_nothing;
+                    time_waited = 0.0f;
+                }
+            } else if (game_phase->get_phase() == Game::GamePhase::FREE_ROAD) {
+                if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+                    Vector2 mouse_position = GetScreenToWorld2D(GetMousePosition(), camera);
+                    std::cout << mouse_position.x << " " << mouse_position.y << "\n";
+                    for (auto actor: actors) {
+                        auto *edge_actor = dynamic_cast<EdgeActor *>(actor);
+                        if (edge_actor == nullptr)
+                            continue;
+                        if (!edge_actor->is_clicked(mouse_position))
+                            continue;
+                        if (!edge_actor->get_highlighted()) {
+                            // display error message
+                            break;
+                        }
+                        edge_actor->set_road(new Road());
+                        for (auto actor2: actors) {
+                            auto *edge_actor2 = dynamic_cast<EdgeActor *>(actor2);
+                            if (edge_actor2 == nullptr)
+                                continue;
+                            edge_actor2->set_highlighted(false);
+                        }
+                        game_phase = &do_nothing;
+                        break;
+                    }
                 }
             }
             float delta_time = GetFrameTime();
-            std::cout << "Rendering actors " << std::endl;
             for (auto actor: actors) {
                 actor->update(delta_time);
             }
-            std::cout << "Ticking animation sequence " << std::endl;
             animation_sequence.tick_animation(delta_time);
             // render phase
             BeginDrawing();
