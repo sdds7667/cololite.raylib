@@ -13,6 +13,8 @@ namespace Game {
         WAIT_FOR_TIME,
         FREE_BUILDING,
         FREE_ROAD,
+        ROLL,
+        PLAYER_TURN,
     };
 
     namespace GamePhaseParameters {

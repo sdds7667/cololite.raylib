@@ -30,6 +30,9 @@ namespace Engine {
         Texture2D stone;
         Texture2D wheat;
         Texture2D random;
+        Texture2D resource_outline;
+        Texture2D resource_stack;
+        Texture2D trade;
 
         ~ResourceSprites();
     };

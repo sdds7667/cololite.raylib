@@ -162,6 +162,7 @@ namespace Map {
         std::ranges::shuffle(numbers, rng);
         std::ranges::shuffle(resources, rng);
         std::vector<std::pair<Resource, int> > random_resources{};
+
         random_resources.reserve(numbers.size());
         for (int i = 0; i < numbers.size(); i++) {
             random_resources.emplace_back(resources[i], numbers[i]);
@@ -181,7 +182,8 @@ namespace Map {
                 auto raw_corner_coord = CornerCoord{coord, corner_direction};
                 CornerCoord normalized_corner_coord = map.get_normalized_corner_coord(raw_corner_coord);
                 Corner *corner;
-                if (auto map_find_result = map.corners.find(raw_corner_coord); map_find_result != map.corners.end()) {
+                if (auto map_find_result = map.corners.find(normalized_corner_coord);
+                    map_find_result != map.corners.end()) {
                     corner = map_find_result->second;
                 } else {
                     corner = new Corner();

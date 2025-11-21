@@ -1,6 +1,6 @@
-
 #include "engine.hh"
 #include <iostream>
+#include <random>
 #include <ranges>
 
 #include "actor.hh"
@@ -132,8 +132,149 @@ namespace Engine {
             const Vector2 final_text_position =
                     Vector2Subtract(circle_position, Vector2Divide(font_size, divide_by_two));
             DrawTextEx(render_resources.map_font, number.c_str(), final_text_position,
-                       static_cast<float>(render_resources.map_font.baseSize), 0, WHITE);
+                       32.0f, 0, WHITE);
             // DrawText(number.c_str(), final_text_position.x, final_text_position.y, 32, WHITE);
+        }
+    }
+
+    void render_player_resources(const RenderResources &render_resources,
+                                 const std::unordered_map<Map::Resource, int> &player_resources) {
+        float starting_x = 50.0f;
+        float starting_y = 110.0f;
+        float texture_width = 64.0f;
+        for (const auto resource: {
+                 Map::Resource::WOOD, Map::Resource::BRICK, Map::Resource::SHEEP, Map::Resource::WHEAT,
+                 Map::Resource::STONE
+             }) {
+            auto &outline_texture = render_resources.resource_sprites.resource_outline;
+
+            const auto texture = get_texture_for_resource(render_resources, resource);
+            float scale = texture_width / static_cast<float>(texture.width);
+            const auto resource_amount = player_resources.at(resource);
+            Vector2 outline_texture_size = {
+                static_cast<float>(outline_texture.width) * scale * 1.5f,
+                static_cast<float>(outline_texture.height) * scale * 1.5f,
+            };
+
+            std::string number = std::to_string(resource_amount);
+            const auto font_size = MeasureTextEx(render_resources.map_font, number.c_str(), 32.0, 0.0f);
+            Vector2 text_position = {
+                .x = starting_x + 70.0f + texture_width,
+                .y = starting_y + static_cast<float>(texture.height) * scale * .5f,
+            };
+            Vector2 outline_position = {
+                .x = (starting_x + texture_width / 2.0f) - outline_texture_size.x / 2.0f,
+                .y = starting_y + texture_width / 2.0f - outline_texture_size.y / 2.0f,
+            };
+            Vector2 divide_by_two = {.x = 2.0f, .y = 2.0f};
+            const Vector2 final_text_position =
+                    Vector2Subtract(text_position, Vector2Divide(font_size, divide_by_two));
+            DrawTextureEx(outline_texture, outline_position,
+                          0.0f, scale * 1.5f, WHITE);
+            DrawTextureEx(texture, Vector2{.x = starting_x, .y = starting_y}, 0.0f, scale, WHITE);
+            DrawTextEx(render_resources.map_font, std::to_string(resource_amount).c_str(), final_text_position,
+                       32.0, 0, WHITE);
+            starting_y += outline_texture_size.y + 10.f;
+        }
+    }
+
+    void render_rolls(const RenderResources &render_resources, const std::deque<Roll> &rolls) {
+        constexpr float starting_x = 1920.0 / 2;
+        constexpr float starting_y = 64.0f;
+        constexpr float spacing = 10.0f;
+        constexpr float scale = 1.0f;
+        constexpr float circle_radius = 32.0f;
+        for (size_t i = 0; i < 5; i++) {
+            Vector2 circle_position = {
+                .x = starting_x + (spacing + circle_radius * 2) * static_cast<float>(i),
+                .y = starting_y,
+            };
+            std::string number = std::to_string(rolls.at(i).get_roll());
+            Vector2 text_size = MeasureTextEx(render_resources.map_font, number.c_str(), 32.0, 0.0f);
+            Vector2 text_position = Vector2Subtract(circle_position, Vector2Divide(text_size, {.x = 2.0f, .y = 2.0f}));
+            DrawCircleV(circle_position, circle_radius, BLACK);
+            DrawTextEx(render_resources.map_font, number.c_str(), text_position,
+                       32.0, 0, WHITE);
+        }
+    }
+
+    void enable_building_spots_with_roads(std::vector<Actor *> &actors) {
+        for (auto actor: actors) {
+            auto *corner_actor = dynamic_cast<CornerActor *>(actor);
+            if (corner_actor == nullptr) continue;
+            auto corner = corner_actor->get_corner();
+            if (corner->house == nullptr) {
+                bool can_build = false;
+                for (auto edge: corner->edges | std::views::values) {
+                    if (edge->road != nullptr) {
+                        can_build = true;
+                        break;
+                    }
+                }
+                if (!can_build) {
+                    continue;
+                }
+                for (auto edge: corner->edges | std::views::values) {
+                    for (auto corner2: edge->corners | std::views::values) {
+                        if (corner2->house != nullptr) {
+                            can_build = false;
+                            break;
+                        }
+                    }
+                }
+                if (can_build) {
+                    corner_actor->set_highlighted(true);
+                }
+            }
+        }
+    }
+
+    void enable_building_spots(std::vector<Actor *> &actors) {
+        for (auto actor: actors) {
+            auto *corner_actor = dynamic_cast<CornerActor *>(actor);
+            if (corner_actor == nullptr) continue;
+            auto corner = corner_actor->get_corner();
+            if (corner->house == nullptr) {
+                bool free_neighbors = true;
+                for (auto edge: corner->edges | std::views::values) {
+                    for (auto corner2: edge->corners | std::views::values) {
+                        if (corner2->house != nullptr) {
+                            free_neighbors = false;
+                            break;
+                        }
+                    }
+                }
+                if (free_neighbors) {
+                    corner_actor->set_highlighted(true);
+                }
+            }
+        }
+    }
+
+    void enable_road_spots(std::vector<Actor *> &actors) {
+        for (auto actor: actors) {
+            auto *edge_actor = dynamic_cast<EdgeActor *>(actor);
+            if (edge_actor == nullptr) continue;
+            auto edge = edge_actor->get_edge();
+            if (edge->road == nullptr) {
+                bool can_build = false;
+                for (auto corner: edge->corners | std::views::values) {
+                    if (corner->house != nullptr) {
+                        can_build = true;
+                        break;
+                    }
+                    for (auto corner_roads: corner->edges) {
+                        if (corner_roads.second->road != nullptr) {
+                            can_build = true;
+                            break;
+                        }
+                    }
+                    if (can_build) break;
+                }
+                if (can_build) {
+                    edge_actor->set_highlighted(true);
+                }
+            }
         }
     }
 
@@ -171,7 +312,7 @@ namespace Engine {
         constexpr RenderSettings render_settings{.hex_size = 60, .full_hex_size = 70};
 
         const RenderResources render_resources = {
-            .map_font = LoadFontEx("resources/OpenSans-Regular.ttf", 32, nullptr, 250),
+            .map_font = LoadFontEx("resources/OpenSans-Regular.ttf", 128, nullptr, 250),
             .resource_sprites = {
                 .bricks = LoadTexture("resources/sprites/resources/resource_bricks.png"),
                 .sheep = LoadTexture("resources/sprites/resources/resource_sheep.png"),
@@ -179,7 +320,10 @@ namespace Engine {
                 .cactus = LoadTexture("resources/sprites/resources/resource_cactus.png"),
                 .stone = LoadTexture("resources/sprites/resources/resource_stone.png"),
                 .wheat = LoadTexture("resources/sprites/resources/resource_wheat.png"),
-                .random = LoadTexture("resources/sprites/resources/resource_random.png")
+                .random = LoadTexture("resources/sprites/resources/resource_random.png"),
+                .resource_outline = LoadTexture("resources/sprites/resources/resource_outline.png"),
+                .resource_stack = LoadTexture("resources/sprites/resources/coin_stack.png"),
+                .trade = LoadTexture("resources/sprites/resources/trade.png"),
             },
             .sprites = {
                 .house = LoadTexture("resources/sprites/house.png"),
@@ -199,19 +343,34 @@ namespace Engine {
             .zoom = 1.0f,
         };
 
+
+        std::unordered_map<Map::Resource, int> player_resources = {
+            {Map::Resource::WHEAT, 0},
+            {Map::Resource::WOOD, 0},
+            {Map::Resource::BRICK, 0},
+            {Map::Resource::SHEEP, 0},
+            {Map::Resource::STONE, 0},
+        };
+
         Map::Map map = Map::Map::build_map_of_size(2);
+        std::vector<Roll> rolls;
+        for (int i = 1; i < 7; i++) {
+            for (int j = 1; j < 7; j++) {
+                rolls.emplace_back(i + j);
+            }
+        }
+        std::default_random_engine random_engine{std::random_device{}()};
+        std::ranges::shuffle(rolls, random_engine);
+        std::deque<Roll> rolls_queue;
+        std::vector<Roll> discard_pile;
+        rolls_queue.insert(rolls_queue.end(), rolls.begin(), rolls.end());
 
         std::vector<Actor *> actors;
         AnimationSequence animation_sequence{};
         Game::GameSequence game_sequence;
-        game_sequence.emplace_back(Game::GamePhaseParameterized::for_no_parameter(Game::GamePhase::FREE_ROAD));
-        game_sequence.emplace_back(Game::GamePhaseParameterized::for_no_parameter(Game::GamePhase::FREE_BUILDING));
-        game_sequence.emplace_back(Game::GamePhaseParameterized::for_no_parameter(Game::GamePhase::FREE_ROAD));
-        game_sequence.emplace_back(Game::GamePhaseParameterized::for_no_parameter(Game::GamePhase::FREE_BUILDING));
-        game_sequence.emplace_back(Game::GamePhaseParameterized::for_no_parameter(Game::GamePhase::FREE_ROAD));
-        game_sequence.emplace_back(Game::GamePhaseParameterized::for_no_parameter(Game::GamePhase::FREE_BUILDING));
-        game_sequence.emplace_back(Game::GamePhaseParameterized::for_no_parameter(Game::GamePhase::FREE_ROAD));
-        game_sequence.emplace_back(Game::GamePhaseParameterized::for_no_parameter(Game::GamePhase::FREE_BUILDING));
+
+        game_sequence.emplace_back(Game::GamePhaseParameterized::for_no_parameter(Game::GamePhase::PLAYER_TURN));
+        game_sequence.emplace_back(Game::GamePhaseParameterized::for_no_parameter(Game::GamePhase::ROLL));
         game_sequence.emplace_back(Game::GamePhaseParameterized::for_no_parameter(Game::GamePhase::FREE_ROAD));
         game_sequence.emplace_back(Game::GamePhaseParameterized::for_no_parameter(Game::GamePhase::FREE_BUILDING));
         game_sequence.emplace_back(Game::GamePhaseParameterized::for_no_parameter(Game::GamePhase::FREE_ROAD));
@@ -223,6 +382,20 @@ namespace Engine {
         auto *game_phase = &do_nothing;
         float time_waited = 0.0f;
         std::vector<Map::Edge *> edges_to_highlight;
+        auto coin_stack = SpriteActor(render_resources.resource_sprites.resource_stack, {-64.0f - 12.0f, 0.0f},
+                                      SpriteAnchor::MIDDLE_CENTER);
+        coin_stack.set_scale(64.0f / static_cast<float>(render_resources.resource_sprites.resource_stack.width));
+        auto trade_button = SpriteActor(render_resources.resource_sprites.trade, {0.0f, 0.0f},
+                                        SpriteAnchor::MIDDLE_CENTER);
+        trade_button.set_scale(64.0f / static_cast<float>(render_resources.resource_sprites.trade.width));
+        auto coin_button = SpriteActor(render_resources.resource_sprites.resource_outline, {64.0f, 0.0f},
+                                       SpriteAnchor::MIDDLE_CENTER);
+        coin_button.set_scale(48.0f / static_cast<float>(render_resources.resource_sprites.resource_outline.width));
+        auto trade_button_image = GroupSpriteActor(Vector2Zero(),
+                                                   {&coin_stack, &trade_button, &coin_button});
+        trade_button_image.set_anchor(SpriteAnchor::MIDDLE_CENTER);
+        trade_button_image.set_position({0.0f, static_cast<float>(GetScreenHeight()) / 2.0f - 100.0f});
+        actors.push_back(&trade_button_image);
 
 
         for (const auto [coord, edge]: map.get_edges()) {
@@ -255,25 +428,7 @@ namespace Engine {
                     } else {
                         game_phase = action.get_next_phase();
                         if (game_phase->get_phase() == Game::GamePhase::FREE_BUILDING) {
-                            for (auto actor: actors) {
-                                auto *corner_actor = dynamic_cast<CornerActor *>(actor);
-                                if (corner_actor == nullptr) continue;
-                                auto corner = corner_actor->get_corner();
-                                if (corner->house == nullptr) {
-                                    bool free_neighbors = true;
-                                    for (auto edge: corner->edges | std::views::values) {
-                                        for (auto corner2: edge->corners | std::views::values) {
-                                            if (corner2->house != nullptr) {
-                                                free_neighbors = false;
-                                                break;
-                                            }
-                                        }
-                                    }
-                                    if (free_neighbors) {
-                                        corner_actor->set_highlighted(true);
-                                    }
-                                }
-                            }
+                            enable_building_spots(actors);
                         } else if (game_phase->get_phase() == Game::GamePhase::WAIT_FOR_TIME) {
                             time_waited = 0.0f;
                         } else if (game_phase->get_phase() == Game::GamePhase::FREE_ROAD) {
@@ -285,6 +440,15 @@ namespace Engine {
                                         if (edge->road == nullptr)
                                             edge_actor->set_highlighted(true);
                                     }
+                                }
+                            }
+                        } else if (game_phase->get_phase() == Game::GamePhase::PLAYER_TURN) {
+                            if (player_resources[Map::Resource::WOOD] >= 1 && player_resources[Map::Resource::BRICK] >=
+                                1) {
+                                enable_road_spots(actors);
+                                if (player_resources[Map::Resource::WHEAT] >= 1 && player_resources[
+                                        Map::Resource::SHEEP] >= 1) {
+                                    enable_building_spots_with_roads(actors);
                                 }
                             }
                         }
@@ -356,6 +520,105 @@ namespace Engine {
                         break;
                     }
                 }
+            } else if (game_phase->get_phase() == Game::GamePhase::ROLL) {
+                if (IsKeyReleased(KEY_SPACE)) {
+                    if (rolls_queue.empty()) {
+                        game_phase = &do_nothing;
+                    } else {
+                        Roll roll = rolls_queue.front();
+                        discard_pile.push_back(roll);
+                        rolls_queue.pop_front();
+                        if (rolls_queue.size() < 5) {
+                            std::ranges::shuffle(discard_pile, random_engine);
+                            rolls_queue.insert(rolls_queue.end(), discard_pile.begin(), discard_pile.end());
+                            discard_pile.clear();
+                        }
+                        for (const auto hex: map.get_hexes() | std::views::values) {
+                            if (hex->number == roll.get_roll()) {
+                                for (const auto corner: hex->corners | std::views::values) {
+                                    if (corner->house != nullptr) {
+                                        player_resources[hex->resource] = player_resources[hex->resource] + 1;
+                                    }
+                                }
+                            }
+                        }
+                        game_phase = &do_nothing;
+                    }
+                }
+            } else if (game_phase->get_phase() == Game::GamePhase::PLAYER_TURN) {
+                if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+                    Vector2 mouse_position = GetScreenToWorld2D(GetMousePosition(), camera);
+                    std::cout << mouse_position.x << " " << mouse_position.y << "\n";
+
+                    bool build = false;
+
+                    for (auto actor: actors) {
+                        auto *corner_actor = dynamic_cast<CornerActor *>(actor);
+                        if (corner_actor == nullptr)
+                            continue;
+                        if (!corner_actor->is_clicked(mouse_position))
+                            continue;
+                        if (!corner_actor->get_highlighted()) {
+                            // display error message
+                            break;
+                        }
+                        auto *corner = corner_actor->get_corner();
+                        edges_to_highlight.clear();
+                        for (auto edge: corner->edges | std::views::values) {
+                            edges_to_highlight.push_back(edge);
+                        }
+                        corner_actor->set_house(new House());
+                        player_resources[Map::Resource::WOOD] = player_resources[Map::Resource::WOOD] - 1;
+                        player_resources[Map::Resource::BRICK] = player_resources[Map::Resource::BRICK] - 1;
+                        player_resources[Map::Resource::SHEEP] = player_resources[Map::Resource::SHEEP] - 1;
+                        player_resources[Map::Resource::WHEAT] = player_resources[Map::Resource::WHEAT] - 1;
+                        build = true;
+
+                        break;
+                    }
+
+                    for (auto actor: actors) {
+                        auto *edge_actor = dynamic_cast<EdgeActor *>(actor);
+                        if (edge_actor == nullptr)
+                            continue;
+                        if (!edge_actor->is_clicked(mouse_position))
+                            continue;
+                        if (!edge_actor->get_highlighted()) {
+                            // display error message
+                            break;
+                        }
+                        edge_actor->set_road(new Road());
+                        player_resources[Map::Resource::WOOD] = player_resources[Map::Resource::WOOD] - 1;
+                        player_resources[Map::Resource::BRICK] = player_resources[Map::Resource::BRICK] - 1;
+                        build = true;
+                        break;
+                    }
+                    if (build) {
+                        for (auto actor2: actors) {
+                            auto *edge_actor2 = dynamic_cast<EdgeActor *>(actor2);
+                            if (edge_actor2 != nullptr)
+                                edge_actor2->set_highlighted(false);
+                            auto *corner_actor2 = dynamic_cast<CornerActor *>(actor2);
+                            if (corner_actor2 != nullptr)
+                                corner_actor2->set_highlighted(false);
+                        }
+
+                        if (player_resources[Map::Resource::WOOD] >= 1 && player_resources[Map::Resource::BRICK] >=
+                            1) {
+                            enable_road_spots(actors);
+                            if (player_resources[Map::Resource::WHEAT] >= 1 && player_resources[
+                                    Map::Resource::SHEEP] >= 1) {
+                                enable_building_spots_with_roads(actors);
+                            }
+                        }
+                    }
+                } else if (IsKeyReleased(KEY_SPACE)) {
+                    game_sequence.emplace_back(
+                        Game::GamePhaseParameterized::for_no_parameter(Game::GamePhase::PLAYER_TURN));
+                    game_sequence.emplace_back(Game::GamePhaseParameterized::for_no_parameter(Game::GamePhase::ROLL));
+                    game_sequence.emplace_back(Game::GamePhaseParameterized::wait_for_time(0.2));
+                    game_phase = &do_nothing;
+                }
             }
             float delta_time = GetFrameTime();
             for (auto actor: actors) {
@@ -376,6 +639,28 @@ namespace Engine {
             // DrawLine(0.0, GetScreenHeight() / 2, GetScreenWidth(), GetScreenHeight() / 2, RED);
             // DrawLineEx({0.0, screen_height - 5}, {screen_width, screen_height - 5}, 10, RED);
             DrawTextEx(render_resources.map_font, std::to_string(GetFPS()).c_str(), {30.0, 30.0}, 32.0, 2.0, WHITE);
+            render_player_resources(render_resources, player_resources);
+            render_rolls(render_resources, rolls_queue);
+
+            if (game_phase->get_phase() == Game::GamePhase::ROLL) {
+                std::string text = "Press space to roll";
+                Vector2 center_bottom = {
+                    static_cast<float>(GetScreenWidth() / 2.0f), static_cast<float>(GetScreenHeight() - 100)
+                };
+                Vector2 text_size = MeasureTextEx(render_resources.map_font, text.c_str(), 32.0, 0.0f);
+                Vector2 text_position =
+                        Vector2Subtract(center_bottom, Vector2Divide(text_size, {.x = 2.0f, .y = 2.0f}));
+                DrawTextEx(render_resources.map_font, text.c_str(), text_position, 32.0, 0.0f, WHITE);
+            } else if (game_phase->get_phase() == Game::GamePhase::PLAYER_TURN) {
+                std::string text = "Press space to end turn";
+                Vector2 center_bottom = {
+                    (static_cast<float>(GetScreenWidth()) / 2.0f), static_cast<float>(GetScreenHeight() - 100)
+                };
+                Vector2 text_size = MeasureTextEx(render_resources.map_font, text.c_str(), 32.0, 0.0f);
+                Vector2 text_position =
+                        Vector2Subtract(center_bottom, Vector2Divide(text_size, {.x = 2.0f, .y = 2.0f}));
+                DrawTextEx(render_resources.map_font, text.c_str(), text_position, 32.0, 0.0f, WHITE);
+            }
 
             EndDrawing();
         }
