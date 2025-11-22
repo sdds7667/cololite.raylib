@@ -1,3 +1,5 @@
 .cache/clangd/index
 build
 /.cache/
+
+**/.DS_Store

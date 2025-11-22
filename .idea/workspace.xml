@@ -45,8 +45,8 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ce1b1433-5376-4e80-9a05-f7da3f526e7e" name="Changes" comment="Cities">
-      <change beforePath="$PROJECT_DIR$/src/engine/engine.cc" beforeDir="false" afterPath="$PROJECT_DIR$/src/engine/engine.cc" afterDir="false" />
+    <list default="true" id="ce1b1433-5376-4e80-9a05-f7da3f526e7e" name="Changes" comment="Cleaning up">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -417,7 +417,7 @@
       <workItem from="1763201138662" duration="7043000" />
       <workItem from="1763327903771" duration="8025000" />
       <workItem from="1763722686219" duration="17082000" />
-      <workItem from="1763818971861" duration="9456000" />
+      <workItem from="1763818971861" duration="9544000" />
     </task>
     <task id="LOCAL-00001" summary="Cleaning up the code base">
       <option name="closed" value="true" />
@@ -491,7 +491,15 @@
       <option name="project" value="LOCAL" />
       <updated>1763832913471</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Cleaning up">
+      <option name="closed" value="true" />
+      <created>1763832970233</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1763832970233</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -522,7 +530,8 @@
     <MESSAGE value="Container Actor" />
     <MESSAGE value="Trade system" />
     <MESSAGE value="Cities" />
-    <option name="LAST_COMMIT_MESSAGE" value="Cities" />
+    <MESSAGE value="Cleaning up" />
+    <option name="LAST_COMMIT_MESSAGE" value="Cleaning up" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
