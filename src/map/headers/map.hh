@@ -1,10 +1,10 @@
 
 #pragma once
 #include <unordered_map>
-#include "coords.hh"
+
 #include "coords_hash.hh"
+#include "coords.hh"
 #include "game.hh"
-#include "../../utils/headers/observer.hh"
 
 namespace Map {
     struct Hex;

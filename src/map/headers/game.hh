@@ -5,8 +5,10 @@
 #ifndef COLOLITE_GAME_HH
 #define COLOLITE_GAME_HH
 
-class House {
+struct House {
+    int level = 1;
 };
+
 
 class Road {
 };

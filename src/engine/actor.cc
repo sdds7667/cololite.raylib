@@ -4,17 +4,104 @@
 
 #include "actor.hh"
 
+#include "engine_settings.hh"
+#include "raylib.h"
 #include "raymath.h"
 
 namespace Engine {
+    Vector2 calculate_anchor_from_enum(const SpriteAnchor &anchor) {
+        Vector2 v_anchor = {};
+        switch (anchor) {
+            case SpriteAnchor::TOP_LEFT:
+                v_anchor = {0.0f, 0.0f};
+                break;
+            case SpriteAnchor::TOP_CENTER:
+                v_anchor = {0.5f, 0.0f};
+                break;
+            case SpriteAnchor::TOP_RIGHT:
+                v_anchor = {1.0f, 0.0f};
+                break;
+            case SpriteAnchor::MIDDLE_LEFT:
+                v_anchor = {0.0f, 0.5f};
+                break;
+            case SpriteAnchor::MIDDLE_CENTER:
+                v_anchor = {0.5f, 0.5f};
+                break;
+            case SpriteAnchor::MIDDLE_RIGHT:
+                v_anchor = {1.0f, 0.5f};
+                break;
+            case SpriteAnchor::BOTTOM_LEFT:
+                v_anchor = {0.0f, 1.0f};
+                break;
+            case SpriteAnchor::BOTTOM_CENTER:
+                v_anchor = {0.5f, 1.0f};
+                break;
+            case SpriteAnchor::BOTTOM_RIGHT:
+                v_anchor = {1.0f, 1.0f};
+                break;
+            default: ;
+        }
+        return v_anchor;
+    }
+
+    FixedSizedTextActor::FixedSizedTextActor(const std::string &text, const Font &font, Color color, float font_size,
+                                             Vector2 position) : m_font(font), m_color(color), m_font_size(font_size),
+                                                                 m_position(position) {
+        set_text(text);
+    }
+
+    void FixedSizedTextActor::update(float deltaTime) {
+    }
+
+    void FixedSizedTextActor::render() const {
+        DrawTextEx(m_font, m_text.c_str(), {m_bounding_box.x, m_bounding_box.y}, m_font_size, 0.0f, m_color);
+    }
+
+    const Vector2 &FixedSizedTextActor::get_position() const { return m_position; }
+
+    const Rectangle &FixedSizedTextActor::get_bounding_box() const { return m_bounding_box; }
+
+    const Vector2 &FixedSizedTextActor::get_anchor() const { return m_anchor; }
+
+    void FixedSizedTextActor::set_anchor(const Vector2 &anchor) {
+        m_anchor = anchor;
+        m_bounding_box.x = m_position.x - anchor.x * m_bounding_box.width;
+        m_bounding_box.y = m_position.y - anchor.y * m_bounding_box.height;
+    }
+
+    void FixedSizedTextActor::set_anchor(SpriteAnchor anchor) { set_anchor(calculate_anchor_from_enum(anchor)); }
+
+    void FixedSizedTextActor::set_position(const Vector2 &position) {
+        m_position = position;
+        m_bounding_box.x = m_position.x - m_anchor.x * m_bounding_box.width;
+        m_bounding_box.y = m_position.y - m_anchor.y * m_bounding_box.height;
+    }
+
+    Vector2 FixedSizedTextActor::get_anchored_position() const { return {get_bounding_box().x, get_bounding_box().y}; }
+
+    float FixedSizedTextActor::get_width() const { return m_bounding_box.width; }
+
+    float FixedSizedTextActor::get_height() const { return m_bounding_box.height; }
+
+    void FixedSizedTextActor::set_text(const std::string &text) {
+        m_text = text;
+        auto result = MeasureTextEx(m_font, text.c_str(), m_font_size, 00);
+        m_bounding_box.width = result.x;
+        m_bounding_box.height = result.y;
+        m_bounding_box.x = m_position.x - m_anchor.x * m_bounding_box.width;
+        m_bounding_box.y = m_position.y - m_anchor.y * m_bounding_box.height;
+    }
+
+    void FixedSizedTextActor::set_color(Color color) { m_color = color; }
+
+
     void ContainerActor::update_children_positions() const {
         for (int i = 0; i < m_actors.size(); i++) {
             auto *actor = m_actors[i];
             actor->set_position({
-                    m_bounding_box.x + m_bounding_box.width * m_actor_relative_positions[i].x,
-                    m_bounding_box.y + m_bounding_box.height * m_actor_relative_positions[i].y
-                }
-            );
+                m_bounding_box.x + m_bounding_box.width * m_actor_relative_positions[i].x,
+                m_bounding_box.y + m_bounding_box.height * m_actor_relative_positions[i].y
+            });
         }
     }
 
@@ -30,9 +117,29 @@ namespace Engine {
         for (int i = 0; i < m_actors.size(); i++) {
             m_actor_relative_positions[i] = {
                 (m_actors[i]->get_position().x - m_bounding_box.x) / m_bounding_box.width,
-                (m_actors[i]->get_position().y - m_bounding_box.y) / m_bounding_box.height
+                (m_actors[i]->get_position().y - m_bounding_box.y) /
+                m_bounding_box.height
             };
         }
+    }
+
+    ContainerActor::ContainerActor(const Vector2 &position, const std::vector<BoundedBoxActor *> &actors) {
+        m_position = position;
+        changes_propagated_to_children = true;
+        // bool bounding_box_initialized = false;
+        for (const auto actor: actors) {
+            m_actors.push_back(actor);
+            m_actor_relative_positions.push_back({0.0f, 0.0f});
+            auto anchored_actor_position = actor->get_anchored_position();
+            m_bounding_box.x = std::min(m_bounding_box.x, anchored_actor_position.x);
+            m_bounding_box.y = std::min(m_bounding_box.y, anchored_actor_position.y);
+            m_bounding_box.width =
+                    std::max(m_bounding_box.width, anchored_actor_position.x - m_bounding_box.x + actor->get_width());
+            m_bounding_box.height =
+                    std::max(m_bounding_box.height, anchored_actor_position.y - m_bounding_box.y + actor->get_height());
+        }
+        update_relative_positions();
+        recalculate_bounding_box();
     }
 
 
@@ -47,9 +154,7 @@ namespace Engine {
         update_relative_positions();
     }
 
-    void ContainerActor::remove_actor(const BoundedBoxActor *actor) {
-        throw std::runtime_error("Not implemented");
-    }
+    void ContainerActor::remove_actor(const BoundedBoxActor *actor) { throw std::runtime_error("Not implemented"); }
 
 
     void ContainerActor::update(float deltaTime) {
@@ -59,26 +164,20 @@ namespace Engine {
     }
 
     void ContainerActor::render() const {
+        DrawRectangleRec(m_bounding_box, BLACK);
         for (const auto &actor: m_actors) {
             actor->render();
         }
+        DrawCircleV(get_position(), 5.f, RED);
     }
 
-    const Vector2 &ContainerActor::get_position() const {
-        return m_position;
-    }
+    const Vector2 &ContainerActor::get_position() const { return m_position; }
 
-    float ContainerActor::get_width() const {
-        return m_bounding_box.width;
-    }
+    float ContainerActor::get_width() const { return m_bounding_box.width; }
 
-    float ContainerActor::get_height() const {
-        return m_bounding_box.height;
-    }
+    float ContainerActor::get_height() const { return m_bounding_box.height; }
 
-    const Vector2 &ContainerActor::get_anchor() const {
-        return m_anchor;
-    }
+    const Vector2 &ContainerActor::get_anchor() const { return m_anchor; }
 
     void ContainerActor::set_anchor(const Vector2 &anchor) {
         m_anchor = anchor;
@@ -86,43 +185,25 @@ namespace Engine {
     }
 
     void ContainerActor::set_anchor(SpriteAnchor anchor) {
-        switch (anchor) {
-            case SpriteAnchor::TOP_LEFT:
-                m_anchor = {0.0f, 0.0f};
-                break;
-            case SpriteAnchor::TOP_CENTER:
-                m_anchor = {0.5f, 0.0f};
-                break;
-            case SpriteAnchor::TOP_RIGHT:
-                m_anchor = {1.0f, 0.0f};
-                break;
-            case SpriteAnchor::MIDDLE_LEFT:
-                m_anchor = {0.0f, 0.5f};
-                break;
-            case SpriteAnchor::MIDDLE_CENTER:
-                m_anchor = {0.5f, 0.5f};
-                break;
-            case SpriteAnchor::MIDDLE_RIGHT:
-                m_anchor = {1.0f, 0.5f};
-                break;
-            case SpriteAnchor::BOTTOM_LEFT:
-                m_anchor = {0.0f, 1.0f};
-                break;
-            case SpriteAnchor::BOTTOM_CENTER:
-                m_anchor = {0.5f, 1.0f};
-                break;
-            case SpriteAnchor::BOTTOM_RIGHT:
-                m_anchor = {1.0f, 1.0f};
-                break;
-            default: ;
-        }
-
+        m_anchor = calculate_anchor_from_enum(anchor);
         recalculate_bounding_box();
     }
 
     void ContainerActor::set_position(const Vector2 &position) {
         m_position = position;
         recalculate_bounding_box();
+    }
+
+    Vector2 ContainerActor::get_anchored_position() const {
+        return Vector2Subtract(m_position, Vector2Multiply(m_anchor, Vector2{get_width(), get_height()}));
+    }
+
+    Rectangle ContainerActor::get_bounding_box() const { return m_bounding_box; }
+
+    void ContainerActor::cleanup() {
+        for (const auto actor: m_actors) {
+            delete actor;
+        }
     }
 
     SpriteActor::SpriteActor(Vector2 position) : m_position(position) {
@@ -134,6 +215,191 @@ namespace Engine {
     }
 
     void SpriteActor::set_position(const Vector2 &position) { this->m_position = position; }
+
+    BoundingBoxActor::BoundingBoxActor(const Rectangle &m_bounding_box) : m_bounding_box(m_bounding_box) {
+    }
+
+    void BoundingBoxActor::update(float deltaTime) {
+    }
+
+    void BoundingBoxActor::render() const {
+    }
+
+    Rectangle BoundingBoxActor::get_bounding_box() const { return m_bounding_box; }
+
+    const Vector2 &BoundingBoxActor::get_position() const { return m_position; }
+
+    Vector2 BoundingBoxActor::get_anchored_position() const {
+        return Vector2Subtract(m_position, Vector2Multiply(m_anchor, Vector2{get_width(), get_height()}));
+    }
+
+    float BoundingBoxActor::get_width() const { return m_bounding_box.width; }
+
+    float BoundingBoxActor::get_height() const { return m_bounding_box.height; }
+
+    const Vector2 &BoundingBoxActor::get_anchor() const { return m_anchor; }
+
+    void BoundingBoxActor::set_anchor(const Vector2 &anchor) { m_anchor = anchor; }
+
+    void BoundingBoxActor::set_anchor(SpriteAnchor anchor) { m_anchor = calculate_anchor_from_enum(anchor); }
+
+    void BoundingBoxActor::set_position(const Vector2 &position) {
+        m_position = position;
+        m_bounding_box.x = m_position.x - m_anchor.x * m_bounding_box.width;
+        m_bounding_box.y = m_position.y - m_anchor.y * m_bounding_box.height;
+    }
+
+    ResourceDisplayActor::ResourceDisplayActor(const RenderResources &render_resources,
+                                               const std::unordered_map<Map::Resource, int> &
+                                               player_resources) : ContainerActor(Vector2Zero(), {}) {
+        std::vector<BoundedBoxActor *> resource_containers;
+        float starting_x = 0.0f;
+        float starting_y = 0.0f;
+        float texture_width = 64.0f;
+        for (const auto resource: {
+                 Map::Resource::WOOD, Map::Resource::BRICK, Map::Resource::SHEEP,
+                 Map::Resource::WHEAT, Map::Resource::STONE
+             }) {
+            auto &outline_texture = render_resources.resource_sprites.resource_outline;
+            const auto &texture = get_texture_for_resource(render_resources, resource);
+            float scale = texture_width / static_cast<float>(texture.width);
+
+            auto *sprite_actor = new SpriteActor(texture, Vector2Zero(), SpriteAnchor::MIDDLE_CENTER);
+            sprite_actor->set_scale(scale);
+            auto *outline_actor = new SpriteActor(outline_texture, Vector2Zero(), SpriteAnchor::MIDDLE_CENTER);
+            outline_actor->set_scale(scale * 1.5f);
+            auto container_actor = new ContainerActor({starting_x, starting_y}, {outline_actor, sprite_actor});
+            resource_containers.emplace_back(container_actor);
+            resource_sprites[resource] = container_actor;
+
+            auto *fixed_sized_text_actor =
+                    new FixedSizedTextActor("100", render_resources.map_font, WHITE, 32.0f,
+                                            Vector2{
+                                                starting_x + outline_texture.width * scale * 1.5f + 30,
+                                                starting_y + outline_texture.height * scale * 1.5f / 2.0f
+                                            });
+            resource_text_actors[resource] = fixed_sized_text_actor;
+            fixed_sized_text_actor->set_anchor(SpriteAnchor::MIDDLE_CENTER);
+
+            auto *resource_delta =
+                    new FixedSizedTextActor("+100", render_resources.map_font, WHITE, 32.0f,
+                                            Vector2{
+                                                starting_x + outline_texture.width * scale * 1.5f + 30 * 2 +
+                                                fixed_sized_text_actor->get_width(),
+                                                starting_y + outline_texture.height * scale * 1.5f / 2.0f
+                                            });
+            delta_resources_actors[resource] = resource_delta;
+            resource_delta->set_anchor(SpriteAnchor::MIDDLE_CENTER);
+            auto bounding_box_actor = new BoundingBoxActor{
+                Rectangle{
+                    .x = 0.0f,
+                    .y = 0.0f,
+                    .width = resource_delta->get_anchored_position().x + resource_delta->get_width() - starting_x,
+                    .height = outline_texture.height * scale * 1.5f
+                }
+            };
+            bounding_box_actor->set_position(Vector2{starting_x, starting_y});
+            resource_bounding_box[resource] = bounding_box_actor;
+            starting_y += outline_texture.height * scale * 1.5f + 10.f;
+            resource_containers.emplace_back(fixed_sized_text_actor);
+            resource_containers.emplace_back(resource_delta);
+            resource_containers.emplace_back(bounding_box_actor);
+        }
+
+        changes_propagated_to_children = true;
+        // bool bounding_box_initialized = false;
+        for (const auto actor: resource_containers) {
+            m_actors.push_back(actor);
+            m_actor_relative_positions.push_back({0.0f, 0.0f});
+            auto anchored_actor_position = actor->get_anchored_position();
+            m_bounding_box.x = std::min(m_bounding_box.x, anchored_actor_position.x);
+            m_bounding_box.y = std::min(m_bounding_box.y, anchored_actor_position.y);
+            m_bounding_box.width =
+                    std::max(m_bounding_box.width, anchored_actor_position.x - m_bounding_box.x + actor->get_width());
+            m_bounding_box.height =
+                    std::max(m_bounding_box.height, anchored_actor_position.y - m_bounding_box.y + actor->get_height());
+        }
+        update_relative_positions();
+        recalculate_bounding_box();
+    }
+
+    void ResourceDisplayActor::update_resources(const std::unordered_map<Map::Resource, int> &player_resources,
+                                                const std::unordered_map<Map::Resource, int> &delta_resources) const {
+        for (const auto [resource, amount]: player_resources) {
+            resource_text_actors.at(resource)->set_text(std::to_string(amount));
+        }
+        for (const auto [resource, amount]: delta_resources) {
+            auto resource_actor = delta_resources_actors.at(resource);
+            if (amount == 0) {
+                resource_actor->set_text("");
+            } else if (amount > 0) {
+                resource_actor->set_text("+" + std::to_string(amount));
+                resource_actor->set_color(GREEN);
+            } else {
+                resource_actor->set_text(std::to_string(amount));
+                resource_actor->set_color(RED);
+            }
+        }
+    }
+
+    void ResourceDisplayActor::render() const {
+        ContainerActor::render();
+        for (const auto [resource, actor]: resource_bounding_box) {
+            DrawRectangleLinesEx(actor->get_bounding_box(), 3.0f, WHITE);
+        }
+    }
+
+    std::optional<Map::Resource> ResourceDisplayActor::is_over_resource(const Vector2 &mouse_position) const {
+        if (mouse_position.x < m_bounding_box.x || mouse_position.x > m_bounding_box.x + m_bounding_box.width ||
+            mouse_position.y < m_bounding_box.y || mouse_position.y > m_bounding_box.y + m_bounding_box.height) {
+            return std::nullopt;
+        }
+        for (const auto [resource, actor]: resource_bounding_box) {
+            if (CheckCollisionPointRec(mouse_position, actor->get_bounding_box())) {
+                return resource;
+            }
+        }
+        return std::nullopt;
+    }
+
+    std::optional<Map::Resource> ResourceDisplayActor::is_over_resource_sprite(const Vector2 &mouse_position) const {
+        if (mouse_position.x < m_bounding_box.x || mouse_position.x > m_bounding_box.x + m_bounding_box.width ||
+            mouse_position.y < m_bounding_box.y || mouse_position.y > m_bounding_box.y + m_bounding_box.height) {
+            return std::nullopt;
+        }
+        for (const auto [resource, actor]: resource_sprites) {
+            if (CheckCollisionPointRec(mouse_position, actor->get_bounding_box())) {
+                return resource;
+            }
+        }
+        return std::nullopt;
+    }
+
+    ContainerActor *ResourceDisplayActor::get_drag_and_drop_resource(const RenderResources &resources,
+                                                                     const Vector2 &mouse_position) const {
+        for (const auto [resource, actor]: resource_sprites) {
+            if (CheckCollisionPointRec(mouse_position, actor->get_bounding_box())) {
+                Vector2 anchored_actor_position = actor->get_anchored_position();
+                Vector2 delta = Vector2Subtract(mouse_position, anchored_actor_position);
+                Vector2 anchor = Vector2Divide(delta, {actor->get_width(), actor->get_height()});
+
+                constexpr float texture_width = 64.0f;
+
+                auto outline_texture = resources.resource_sprites.resource_outline;
+                auto resource_texture = get_texture_for_resource(resources, resource);
+                float scale = (texture_width) / resource_texture.width;
+                auto *outline_actor = new SpriteActor(outline_texture, Vector2Zero(), SpriteAnchor::MIDDLE_CENTER);
+                outline_actor->set_scale(scale * 1.5f);
+                auto *resource_actor = new SpriteActor(resource_texture, Vector2Zero(), SpriteAnchor::MIDDLE_CENTER);
+                resource_actor->set_scale(scale);
+                auto *drag_and_drop_actor = new ContainerActor(mouse_position, {outline_actor, resource_actor});
+                drag_and_drop_actor->set_anchor(anchor);
+                return drag_and_drop_actor;
+            }
+        }
+        return nullptr;
+    }
+
 
     const Vector2 &SpriteActor::get_position() const { return m_position; }
 
@@ -191,93 +457,10 @@ namespace Engine {
     }
 
     Vector2 SpriteActor::get_anchored_position() const {
-        return Vector2Add(m_position, Vector2Multiply(m_anchor, Vector2{get_width(), get_height()}));
+        return Vector2Subtract(m_position, Vector2Multiply(m_anchor, Vector2{get_width(), get_height()}));
     }
 
-    const Vector2 &SpriteActor::get_anchor() const {
-        return m_anchor;
-    }
+    const Vector2 &SpriteActor::get_anchor() const { return m_anchor; }
 
-    void SpriteActor::set_anchor(const Vector2 &anchor) {
-        m_anchor = anchor;
-    }
-
-    void GroupSpriteActor::update_bounding_box(Rectangle child_bounding_box) {
-        m_bounding_box = {
-            .x = std::min(m_bounding_box.x, child_bounding_box.x),
-            .y = std::min(m_bounding_box.y, child_bounding_box.y),
-            .width = std::max(m_bounding_box.width, child_bounding_box.width + child_bounding_box.x),
-            .height = std::max(m_bounding_box.height, child_bounding_box.height + child_bounding_box.y)
-        };
-    }
-
-    void GroupSpriteActor::update_children_positions() const {
-        for (int i = 0; i < m_children.size(); i++) {
-            m_children[i]->set_position({
-                m_position.x + m_children_anchor_positions[i].x * m_bounding_box.width,
-                m_position.y + m_children_anchor_positions[i].y * m_bounding_box.height
-            });
-        }
-    }
-
-    GroupSpriteActor::GroupSpriteActor(Vector2 position,
-                                       const std::vector<SpriteActor *> &sprite_actors) : SpriteActor(position),
-        m_children(sprite_actors) {
-        for (const auto &child: m_children) {
-            update_bounding_box(Rectangle{
-                .x = child->get_position().x,
-                .y = child->get_position().y,
-                .width = child->get_width(),
-                .height = child->get_height()
-            });
-        }
-        for (const auto &child: m_children) {
-            Vector2 child_anchor_position = {
-                .x = (child->get_position().x - m_bounding_box.x) / m_bounding_box.width,
-                .y = (child->get_position().y - m_bounding_box.y) / m_bounding_box.height
-            };
-            m_children_anchor_positions.push_back(child_anchor_position);
-        }
-    }
-
-    GroupSpriteActor::~GroupSpriteActor() = default;
-
-    void GroupSpriteActor::add_child(SpriteActor *child) {
-        m_children.push_back(child);
-        update_bounding_box(Rectangle{
-            .x = child->get_position().x,
-            .y = child->get_position().y,
-            .width = child->get_width(),
-            .height = child->get_height()
-        });
-        Vector2 child_anchor_position = {
-            .x = (child->get_position().x - m_bounding_box.x) / m_bounding_box.width,
-            .y = (child->get_position().y - m_bounding_box.y) / m_bounding_box.height
-        };
-        m_children_anchor_positions.push_back(child_anchor_position);
-        update_children_positions();
-    }
-
-    void GroupSpriteActor::remove_child(const SpriteActor *child) { throw std::runtime_error("Not implemented"); }
-
-    void GroupSpriteActor::render() const {
-        for (const auto &child: m_children) {
-            child->render();
-        }
-    }
-
-    void GroupSpriteActor::set_position(const Vector2 &position) {
-        m_position = {position.x - get_width() * m_anchor.x, position.y - get_height() * m_anchor.y};
-        update_children_positions();
-    }
-
-    void GroupSpriteActor::set_scale(float scale) { throw std::runtime_error("Not implemented"); }
-
-    float GroupSpriteActor::get_scale() const { throw std::runtime_error("Not implemented"); }
-
-    void GroupSpriteActor::set_anchor(SpriteAnchor anchor) { SpriteActor::set_anchor(anchor); }
-
-    float GroupSpriteActor::get_width() const { return m_bounding_box.width; }
-
-    float GroupSpriteActor::get_height() const { return m_bounding_box.height; }
+    void SpriteActor::set_anchor(const Vector2 &anchor) { m_anchor = anchor; }
 } // namespace Engine

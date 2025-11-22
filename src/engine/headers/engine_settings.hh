@@ -4,6 +4,7 @@
 
 #ifndef COLOLITE_ENGINE_SETTINGS_HH
 #define COLOLITE_ENGINE_SETTINGS_HH
+#include "map.hh"
 #include "raylib.h"
 
 namespace Engine {
@@ -51,6 +52,8 @@ namespace Engine {
         float hex_size;
         float full_hex_size;
     };
+
+    const Texture2D &get_texture_for_resource(const RenderResources &render_resources, const Map::Resource &resource);
 }
 
 #endif //COLOLITE_ENGINE_SETTINGS_HH

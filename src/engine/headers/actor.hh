@@ -5,7 +5,11 @@
 #ifndef COLOLITE_ACTOR_HH
 #define COLOLITE_ACTOR_HH
 #include <raylib.h>
+#include <unordered_map>
 #include <vector>
+
+#include "engine_settings.hh"
+#include "map.hh"
 
 namespace Engine {
     class Actor {
@@ -58,6 +62,48 @@ namespace Engine {
         virtual void set_position(const Vector2 &position) = 0;
     };
 
+    class FixedSizedTextActor : public BoundedBoxActor {
+    protected:
+        Vector2 m_position{};
+        Vector2 m_anchor{};
+        Rectangle m_bounding_box{};
+        std::string m_text;
+        const Font &m_font;
+        Color m_color;
+        float m_font_size;
+
+    public:
+        FixedSizedTextActor(const std::string &text, const Font &font, Color color, float font_size, Vector2 position);
+
+        void update(float deltaTime) override;
+
+        void render() const override;
+
+        [[nodiscard]] const Vector2 &get_position() const override;
+
+        [[nodiscard]] const Rectangle &get_bounding_box() const;
+
+        [[nodiscard]] const Vector2 &get_anchor() const override;
+
+        void set_anchor(const Vector2 &anchor) override;
+
+        void set_anchor(SpriteAnchor anchor) override;
+
+        void set_position(const Vector2 &position) override;
+
+        [[nodiscard]] Vector2 get_anchored_position() const override;
+
+        [[nodiscard]] float get_width() const override;
+
+        [[nodiscard]] float get_height() const override;
+
+        ~FixedSizedTextActor() override = default;
+
+        void set_text(const std::string &text);
+
+        void set_color(Color color);
+    };
+
     class ContainerActor : public BoundedBoxActor {
     protected:
         std::vector<BoundedBoxActor *> m_actors{};
@@ -73,6 +119,8 @@ namespace Engine {
         void update_relative_positions();
 
     public:
+        ContainerActor(const Vector2 &position, const std::vector<BoundedBoxActor *> &actors);
+
         bool changes_propagated_to_children = true;
 
 
@@ -98,6 +146,12 @@ namespace Engine {
         void set_anchor(SpriteAnchor anchor) override;
 
         void set_position(const Vector2 &position) override;
+
+        [[nodiscard]] Vector2 get_anchored_position() const override;
+
+        [[nodiscard]] Rectangle get_bounding_box() const;
+
+        void cleanup();
     };
 
 
@@ -138,39 +192,62 @@ namespace Engine {
         void set_position(const Vector2 &position) override;
     };
 
-    class GroupSpriteActor : public SpriteActor {
-        std::vector<SpriteActor *> m_children{};
-        std::vector<Vector2> m_children_anchor_positions{};
-        Rectangle m_bounding_box{};
-
-    protected:
-        void update_bounding_box(Rectangle child_bounding_box);
-
-        void update_children_positions() const;
+    class BoundingBoxActor : public BoundedBoxActor {
+        Rectangle m_bounding_box;
+        Vector2 m_position{};
+        Vector2 m_anchor{};
 
     public:
-        GroupSpriteActor(Vector2 position, const std::vector<SpriteActor *> &sprite_actors);
+        explicit BoundingBoxActor(const Rectangle &m_bounding_box);
 
-        ~GroupSpriteActor() override;
-
-        void add_child(SpriteActor *child);
-
-        void remove_child(const SpriteActor *child);
+        void update(float deltaTime) override;
 
         void render() const override;
 
-        void set_position(const Vector2 &position) override;
+        Rectangle get_bounding_box() const;
 
-        void set_scale(float scale) override;
+        [[nodiscard]] const Vector2 &get_position() const override;
 
-        [[nodiscard]] float get_scale() const override;
-
-        void set_anchor(SpriteAnchor anchor) override;
+        [[nodiscard]] Vector2 get_anchored_position() const override;
 
         [[nodiscard]] float get_width() const override;
 
         [[nodiscard]] float get_height() const override;
+
+        [[nodiscard]] const Vector2 &get_anchor() const override;
+
+        void set_anchor(const Vector2 &anchor) override;
+
+        void set_anchor(SpriteAnchor anchor) override;
+
+        void set_position(const Vector2 &position) override;
     };
+
+    class ResourceDisplayActor : public ContainerActor {
+        std::unordered_map<Map::Resource, FixedSizedTextActor *> resource_text_actors;
+        std::unordered_map<Map::Resource, FixedSizedTextActor *> delta_resources_actors;
+        std::unordered_map<Map::Resource, BoundingBoxActor *> resource_bounding_box;
+        std::unordered_map<Map::Resource, ContainerActor *> resource_sprites;
+
+    public:
+        ResourceDisplayActor(const RenderResources &render_resources,
+                             const std::unordered_map<Map::Resource, int> &player_resources);
+
+        ~ResourceDisplayActor() override = default;
+
+        void update_resources(const std::unordered_map<Map::Resource, int> &player_resources,
+                              const std::unordered_map<Map::Resource, int> &delta_resources) const;
+
+        void render() const override;
+
+        [[nodiscard]] std::optional<Map::Resource> is_over_resource(const Vector2 &mouse_position) const;
+
+        [[nodiscard]] std::optional<Map::Resource> is_over_resource_sprite(const Vector2 &mouse_position) const;
+
+        ContainerActor *get_drag_and_drop_resource(const RenderResources &resources,
+                                                   const Vector2 &mouse_position) const;
+    };
+
 
     class ButtonActor : public Actor, public ClickableActor {
         SpriteActor *m_sprite_actor;
