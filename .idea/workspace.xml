@@ -45,18 +45,8 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ce1b1433-5376-4e80-9a05-f7da3f526e7e" name="Changes" comment="Trade system">
-      <change afterPath="$PROJECT_DIR$/src/resources/sprites/resources/village.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/resources/sprites/ui/upgrade.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/engine/actor.cc" beforeDir="false" afterPath="$PROJECT_DIR$/src/engine/actor.cc" afterDir="false" />
+    <list default="true" id="ce1b1433-5376-4e80-9a05-f7da3f526e7e" name="Changes" comment="Cities">
       <change beforePath="$PROJECT_DIR$/src/engine/engine.cc" beforeDir="false" afterPath="$PROJECT_DIR$/src/engine/engine.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/engine/headers/actor.hh" beforeDir="false" afterPath="$PROJECT_DIR$/src/engine/headers/actor.hh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/engine/headers/engine_settings.hh" beforeDir="false" afterPath="$PROJECT_DIR$/src/engine/headers/engine_settings.hh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/engine/headers/map_actors.hh" beforeDir="false" afterPath="$PROJECT_DIR$/src/engine/headers/map_actors.hh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/engine/map_actors.cc" beforeDir="false" afterPath="$PROJECT_DIR$/src/engine/map_actors.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/resources/sprites/house.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/resources/sprites/house.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/resources/sprites/village.png" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -427,7 +417,7 @@
       <workItem from="1763201138662" duration="7043000" />
       <workItem from="1763327903771" duration="8025000" />
       <workItem from="1763722686219" duration="17082000" />
-      <workItem from="1763818971861" duration="9369000" />
+      <workItem from="1763818971861" duration="9456000" />
     </task>
     <task id="LOCAL-00001" summary="Cleaning up the code base">
       <option name="closed" value="true" />
@@ -493,7 +483,15 @@
       <option name="project" value="LOCAL" />
       <updated>1763802153164</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Cities">
+      <option name="closed" value="true" />
+      <created>1763832913471</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1763832913471</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -523,7 +521,8 @@
     <MESSAGE value="Building and animations" />
     <MESSAGE value="Container Actor" />
     <MESSAGE value="Trade system" />
-    <option name="LAST_COMMIT_MESSAGE" value="Trade system" />
+    <MESSAGE value="Cities" />
+    <option name="LAST_COMMIT_MESSAGE" value="Cities" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -535,7 +534,7 @@
         </line-breakpoint>
         <line-breakpoint type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/src/engine/engine.cc</url>
-          <line>481</line>
+          <line>468</line>
           <option name="timeStamp" value="25" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">

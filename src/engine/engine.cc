@@ -369,19 +369,6 @@ namespace Engine {
         auto *game_phase = &do_nothing;
         float time_waited = 0.0f;
         std::vector<Map::Edge *> edges_to_highlight;
-        auto coin_stack = SpriteActor(render_resources.resource_sprites.resource_stack, {-64.0f - 12.0f, 0.0f},
-                                      SpriteAnchor::MIDDLE_CENTER);
-        coin_stack.set_scale(64.0f / static_cast<float>(render_resources.resource_sprites.resource_stack.width));
-        auto trade_button =
-                SpriteActor(render_resources.resource_sprites.trade, {0.0f, 0.0f}, SpriteAnchor::MIDDLE_CENTER);
-        trade_button.set_scale(64.0f / static_cast<float>(render_resources.resource_sprites.trade.width));
-        auto coin_button = SpriteActor(render_resources.resource_sprites.resource_outline, {64.0f, 0.0f},
-                                       SpriteAnchor::MIDDLE_CENTER);
-        coin_button.set_scale(48.0f / static_cast<float>(render_resources.resource_sprites.resource_outline.width));
-        auto trade_button_image = ContainerActor(Vector2Zero(), {&coin_stack, &trade_button, &coin_button});
-        trade_button_image.set_anchor(SpriteAnchor::MIDDLE_CENTER);
-        trade_button_image.set_position({0.0f, static_cast<float>(GetScreenHeight()) / 2.0f - 100.0f});
-        actors.push_back(&trade_button_image);
         ContainerActor *drag_and_drop_trade = nullptr;
         Map::Resource dragged_resource = Map::Resource::NONE;
 
