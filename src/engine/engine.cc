@@ -97,7 +97,7 @@ namespace Engine {
                     offset.b -= distance * factor;
                 }
 
-                float little_size = render_settings.hex_size / 4.0f;
+                float little_size = render_settings.hex_size / 3.5f;
                 const auto little_hex_position = compute_hex_center_position(little_size, coord2);
                 DrawPoly(Vector2Add(hex_position, little_hex_position), 6, little_size, 0, offset);
             }
@@ -203,7 +203,9 @@ namespace Engine {
                     }
                 }
                 if (free_neighbors) {
-                    corner_actor->set_highlighted(true);
+                    if (!corner_actor->get_highlighted()) {
+                        corner_actor->set_highlighted(true);
+                    }
                 }
             }
         }
@@ -232,7 +234,23 @@ namespace Engine {
                         break;
                 }
                 if (can_build) {
-                    edge_actor->set_highlighted(true);
+                    if (!edge_actor->get_highlighted()) {
+                        edge_actor->set_highlighted(true);
+                    }
+                }
+            }
+        }
+    }
+
+    void enable_upgrade_spots(const std::vector<Actor *> actors) {
+        for (auto actor: actors) {
+            auto *corner_actor = dynamic_cast<CornerActor *>(actor);
+            if (corner_actor == nullptr)
+                continue;
+            auto corner = corner_actor->get_corner();
+            if (corner->house != nullptr) {
+                if (corner->house->level == 1) {
+                    corner_actor->set_upgradable(true);
                 }
             }
         }
@@ -269,7 +287,7 @@ namespace Engine {
         };
 
         InitWindow(start_screen_width, start_screen_height, "raylib [core] example - basic window");
-        constexpr RenderSettings render_settings{.hex_size = 60, .full_hex_size = 70};
+        constexpr RenderSettings render_settings{.hex_size = 70, .full_hex_size = 90};
 
         const RenderResources render_resources = {
             .map_font = LoadFontEx("resources/OpenSans-Regular.ttf", 128, nullptr, 250),
@@ -289,7 +307,12 @@ namespace Engine {
             .sprites =
             {
                 .house = LoadTexture("resources/sprites/house.png"),
+                .town = LoadTexture("resources/sprites/village.png"),
             },
+            .ui = {
+                .upgrade = LoadTexture("resources/sprites/ui/upgrade.png"),
+            }
+
 
         };
         std::cout << ") Screen Width: " << GetScreenWidth() << "\n";
@@ -307,8 +330,8 @@ namespace Engine {
 
 
         std::unordered_map<Map::Resource, int> player_resources = {
-            {Map::Resource::WHEAT, 0}, {Map::Resource::WOOD, 0}, {Map::Resource::BRICK, 0},
-            {Map::Resource::SHEEP, 0}, {Map::Resource::STONE, 0},
+            {Map::Resource::WHEAT, 20}, {Map::Resource::WOOD, 20}, {Map::Resource::BRICK, 20},
+            {Map::Resource::SHEEP, 20}, {Map::Resource::STONE, 20},
         };
 
         std::unordered_map<Map::Resource, int> delta_resources = {
@@ -365,6 +388,7 @@ namespace Engine {
         auto player_resources_container = ResourceDisplayActor(render_resources, player_resources);
         player_resources_container.set_position(
             {-GetScreenWidth() / 2.0f + 100.0f, -GetScreenHeight() / 2.0f + 100.0f});
+        player_resources_container.set_background_color(color_scheme.mapBorder);
 
         actors.push_back(&player_resources_container);
 
@@ -424,6 +448,11 @@ namespace Engine {
                                     enable_building_spots_with_roads(actors);
                                 }
                             }
+
+                            if (player_resources[Map::Resource::STONE] >= 3 && player_resources[Map::Resource::WHEAT] >=
+                                2) {
+                                enable_upgrade_spots(actors);
+                            }
                         }
                     }
                 } else {
@@ -451,6 +480,7 @@ namespace Engine {
                             edges_to_highlight.push_back(edge);
                         }
                         corner_actor->set_house(new House());
+                        corner_actor->set_base_color(GREEN);
                         for (auto actor2: actors) {
                             auto *corner_actor2 = dynamic_cast<CornerActor *>(actor2);
                             if (corner_actor2 == nullptr)
@@ -488,6 +518,24 @@ namespace Engine {
                             if (edge_actor2 == nullptr)
                                 continue;
                             edge_actor2->set_highlighted(false);
+                        }
+                        for (auto actor2: actors) {
+                            auto *corner_actor2 = dynamic_cast<CornerActor *>(actor2);
+                            if (corner_actor2 != nullptr) {
+                                corner_actor2->set_highlighted(false);
+                                auto corner = corner_actor2->get_corner();
+                                if (corner->house == nullptr) {
+                                    int corner_roads_built = 0;
+                                    for (auto edge: corner->edges | std::views::values) {
+                                        if (edge->road != nullptr) {
+                                            corner_roads_built++;
+                                        }
+                                    }
+                                    if (corner_roads_built >= 2) {
+                                        corner_actor2->set_base_color(GREEN);
+                                    }
+                                }
+                            }
                         }
                         game_phase = &do_nothing;
                         break;
@@ -531,21 +579,27 @@ namespace Engine {
                             continue;
                         if (!corner_actor->is_clicked(mouse_position))
                             continue;
-                        if (!corner_actor->get_highlighted()) {
+                        if (corner_actor->get_highlighted()) {
                             // display error message
-                            break;
+
+                            auto *corner = corner_actor->get_corner();
+                            edges_to_highlight.clear();
+                            for (auto edge: corner->edges | std::views::values) {
+                                edges_to_highlight.push_back(edge);
+                            }
+                            corner_actor->set_house(new House());
+                            corner_actor->set_base_color(GREEN);
+                            player_resources[Map::Resource::WOOD] = player_resources[Map::Resource::WOOD] - 1;
+                            player_resources[Map::Resource::BRICK] = player_resources[Map::Resource::BRICK] - 1;
+                            player_resources[Map::Resource::SHEEP] = player_resources[Map::Resource::SHEEP] - 1;
+                            player_resources[Map::Resource::WHEAT] = player_resources[Map::Resource::WHEAT] - 1;
+                            build = true;
+                        } else if (corner_actor->get_is_upgradable()) {
+                            corner_actor->get_corner()->house->level++;
+                            player_resources[Map::Resource::STONE] = player_resources[Map::Resource::STONE] - 3;
+                            player_resources[Map::Resource::WHEAT] = player_resources[Map::Resource::WHEAT] - 2;
+                            build = true;
                         }
-                        auto *corner = corner_actor->get_corner();
-                        edges_to_highlight.clear();
-                        for (auto edge: corner->edges | std::views::values) {
-                            edges_to_highlight.push_back(edge);
-                        }
-                        corner_actor->set_house(new House());
-                        player_resources[Map::Resource::WOOD] = player_resources[Map::Resource::WOOD] - 1;
-                        player_resources[Map::Resource::BRICK] = player_resources[Map::Resource::BRICK] - 1;
-                        player_resources[Map::Resource::SHEEP] = player_resources[Map::Resource::SHEEP] - 1;
-                        player_resources[Map::Resource::WHEAT] = player_resources[Map::Resource::WHEAT] - 1;
-                        build = true;
 
                         break;
                     }
@@ -561,6 +615,7 @@ namespace Engine {
                             break;
                         }
                         edge_actor->set_road(new Road());
+
                         player_resources[Map::Resource::WOOD] = player_resources[Map::Resource::WOOD] - 1;
                         player_resources[Map::Resource::BRICK] = player_resources[Map::Resource::BRICK] - 1;
                         build = true;
@@ -569,12 +624,29 @@ namespace Engine {
                     if (build) {
                         for (auto actor2: actors) {
                             auto *edge_actor2 = dynamic_cast<EdgeActor *>(actor2);
-                            if (edge_actor2 != nullptr)
+                            if (edge_actor2 != nullptr) {
                                 edge_actor2->set_highlighted(false);
+                                continue;
+                            }
                             auto *corner_actor2 = dynamic_cast<CornerActor *>(actor2);
-                            if (corner_actor2 != nullptr)
+                            if (corner_actor2 != nullptr) {
                                 corner_actor2->set_highlighted(false);
+                                corner_actor2->set_upgradable(false);
+                                auto corner = corner_actor2->get_corner();
+                                if (corner->house == nullptr) {
+                                    int corner_roads_built = 0;
+                                    for (auto edge: corner->edges | std::views::values) {
+                                        if (edge->road != nullptr) {
+                                            corner_roads_built++;
+                                        }
+                                    }
+                                    if (corner_roads_built >= 2) {
+                                        corner_actor2->set_base_color(GREEN);
+                                    }
+                                }
+                            }
                         }
+
 
                         if (player_resources[Map::Resource::WOOD] >= 1 && player_resources[Map::Resource::BRICK] >= 1) {
                             enable_road_spots(actors);
@@ -582,6 +654,10 @@ namespace Engine {
                                 player_resources[Map::Resource::SHEEP] >= 1) {
                                 enable_building_spots_with_roads(actors);
                             }
+                        }
+                        if (player_resources[Map::Resource::STONE] >= 3 && player_resources[Map::Resource::WHEAT] >=
+                            2) {
+                            enable_upgrade_spots(actors);
                         }
                     }
                     if (drag_and_drop_trade == nullptr) {
@@ -623,14 +699,6 @@ namespace Engine {
                             delta_resources[resource] = 0;
                         }
 
-                        for (auto actor2: actors) {
-                            auto *edge_actor2 = dynamic_cast<EdgeActor *>(actor2);
-                            if (edge_actor2 != nullptr)
-                                edge_actor2->set_highlighted(false);
-                            auto *corner_actor2 = dynamic_cast<CornerActor *>(actor2);
-                            if (corner_actor2 != nullptr)
-                                corner_actor2->set_highlighted(false);
-                        }
 
                         if (player_resources[Map::Resource::WOOD] >= 1 && player_resources[Map::Resource::BRICK] >= 1) {
                             enable_road_spots(actors);
@@ -638,6 +706,10 @@ namespace Engine {
                                 player_resources[Map::Resource::SHEEP] >= 1) {
                                 enable_building_spots_with_roads(actors);
                             }
+                        }
+                        if (player_resources[Map::Resource::STONE] >= 3 && player_resources[Map::Resource::WHEAT] >=
+                            2) {
+                            enable_upgrade_spots(actors);
                         }
 
                         drag_and_drop_trade->cleanup();

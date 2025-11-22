@@ -14,70 +14,12 @@ namespace Engine {
         Map::Corner *corner, const Map::CornerCoord &nominal_corner_coord, const Vector2 &position)
         : render_settings(render_settings), render_resources(render_resources), color_scheme(color_scheme),
           corner(corner),
-          nominal_corner_coord(nominal_corner_coord), position(position), is_highlighted(false) {
+          nominal_corner_coord(nominal_corner_coord), position(position), is_highlighted(false),
+          base_color(color_scheme.mapBorder) {
     }
 
     void CornerActor::update(float delta_time) {
         animations.tick_animations(delta_time);
-    }
-
-    bool CornerActor::get_highlighted() const {
-        return is_highlighted && animations.get_animation_for(CornerActorAnimations::HIGHLIGHTED)->is_finished();
-    }
-
-
-    void CornerActor::render() const {
-        Color color = (corner->house == nullptr) ? color_scheme.mapBorder : GREEN;
-        DrawCircleV(position, render_settings.hex_size * 1.0f / 3.0f, color);
-        if (is_highlighted) {
-            BaseAnimation *animation = animations.get_animation_for(CornerActorAnimations::HIGHLIGHTED);
-            DrawCircleLinesV(
-                position,
-                render_settings.hex_size * 1.0f / 3.0f * animation->get_current_value(), WHITE);
-        }
-        if (corner->house != nullptr) {
-            auto texture = render_resources.sprites.house;
-            float scale = render_settings.hex_size * (1.5f / 3.0f) / static_cast<float>(texture.width);
-
-            float y_pos = position.y - scale * static_cast<float>(texture.height) / 2.0f;
-            auto *animation = animations.get_potential_animation_for(CornerActorAnimations::BUILD_HOUSE);
-            if (animation != nullptr) {
-                y_pos -= animation->get_current_value() * render_settings.hex_size * 1.0f / 3.0f;
-            }
-
-            const Vector2 sprite_position = {
-                .x = position.x - scale * static_cast<float>(texture.width) / 2.0f,
-                .y = y_pos,
-            };
-
-            DrawTextureEx(texture, sprite_position, 0.0f, scale,
-                          WHITE);
-        }
-    }
-
-    const Map::CornerCoord &CornerActor::get_corner_coord() const {
-        return nominal_corner_coord;
-    }
-
-    const Map::Corner *CornerActor::get_corner() const {
-        return corner;
-    }
-
-    void CornerActor::set_house(House *house) {
-        corner->house = house;
-        LinearAnimation *linear_animation = new LinearAnimation(0.2f, 1.0f, 0.0f);
-        animations.add_animation_for(CornerActorAnimations::BUILD_HOUSE, linear_animation);
-    }
-
-    CornerActor::~CornerActor() {
-        if (is_highlighted) {
-            animations.remove_animation_for(CornerActorAnimations::HIGHLIGHTED);
-        }
-        animations.remove_animation_for(CornerActorAnimations::BUILD_HOUSE);
-    }
-
-    bool CornerActor::is_clicked(const Vector2 &mouse_position) const {
-        return Vector2Distance(position, mouse_position) < render_settings.hex_size * 1.0f / 3.0f;
     }
 
     void CornerActor::set_highlighted(const bool highlighted) {
@@ -96,6 +38,101 @@ namespace Engine {
         is_highlighted = highlighted;
     }
 
+
+    bool CornerActor::get_highlighted() const {
+        return is_highlighted && animations.get_animation_for(CornerActorAnimations::HIGHLIGHTED)->is_finished();
+    }
+
+    void CornerActor::render() const {
+        Color color = base_color;
+        auto outline_color = WHITE;
+        if (base_color.g == 228) {
+            outline_color = color_scheme.mapBorder;
+        }
+        auto circle_size = render_settings.hex_size * 1.0f / 3.0f;
+        DrawCircleV(position, circle_size, color);
+        if (is_highlighted) {
+            BaseAnimation *animation = animations.get_animation_for(CornerActorAnimations::HIGHLIGHTED);
+            DrawCircleLinesV(
+                position,
+                render_settings.hex_size * 1.0f / 3.0f * animation->get_current_value(),
+                outline_color);
+        }
+        if (corner->house != nullptr) {
+            auto texture = render_resources.sprites.house;
+            if (corner->house->level == 2) {
+                texture = render_resources.sprites.town;
+            }
+            float scale = render_settings.hex_size * (1.5f / 3.0f) / static_cast<float>(texture.width);
+
+            float y_pos = position.y - scale * static_cast<float>(texture.height) / 2.0f;
+            auto *animation = animations.get_potential_animation_for(CornerActorAnimations::BUILD_HOUSE);
+            if (animation != nullptr) {
+                y_pos -= animation->get_current_value() * render_settings.hex_size * 1.0f / 3.0f;
+            }
+
+            const Vector2 sprite_position = {
+                .x = position.x - scale * static_cast<float>(texture.width) / 2.0f,
+                .y = y_pos,
+            };
+
+            DrawTextureEx(texture, sprite_position, 0.0f, scale,
+                          WHITE);
+            if (is_upgradable) {
+                auto &upgrade_texture = render_resources.ui.upgrade;
+                auto upgrade_scale = scale * .75f;
+                Vector2 upgrade_sprite_center_angle = {cos(-PI / 3), sin(-PI / 3)};
+                Vector2 sprite_center_position = Vector2Scale(upgrade_sprite_center_angle, circle_size * .7);
+                Vector2 sprite_size = {
+                    static_cast<float>(upgrade_texture.width) * upgrade_scale,
+                    static_cast<float>(upgrade_texture.height) * upgrade_scale
+                };
+                Vector2 upgrade_final_position =
+                        Vector2Add(position,
+                                   Vector2Subtract(sprite_center_position, Vector2Scale(sprite_size, .5f)));
+
+                DrawTextureEx(upgrade_texture, upgrade_final_position, 0.0f, upgrade_scale, WHITE);
+            }
+        }
+    }
+
+    const Map::CornerCoord &CornerActor::get_corner_coord() const {
+        return nominal_corner_coord;
+    }
+
+    const Map::Corner *CornerActor::get_corner() const {
+        return corner;
+    }
+
+    void CornerActor::set_house(House *house) {
+        corner->house = house;
+        LinearAnimation *linear_animation = new LinearAnimation(0.2f, 1.0f, 0.0f);
+        animations.add_animation_for(CornerActorAnimations::BUILD_HOUSE, linear_animation);
+    }
+
+    void CornerActor::set_upgradable(bool upgradable) {
+        is_upgradable = upgradable;
+    }
+
+    bool CornerActor::get_is_upgradable() const {
+        return is_upgradable;
+    }
+
+    void CornerActor::set_base_color(Color base_color) {
+        this->base_color = base_color;
+    }
+
+    CornerActor::~CornerActor() {
+        if (is_highlighted) {
+            animations.remove_animation_for(CornerActorAnimations::HIGHLIGHTED);
+        }
+        animations.remove_animation_for(CornerActorAnimations::BUILD_HOUSE);
+    }
+
+    bool CornerActor::is_clicked(const Vector2 &mouse_position) const {
+        return Vector2Distance(position, mouse_position) < render_settings.hex_size * 1.0f / 3.0f;
+    }
+
     EdgeActor::EdgeActor(
         const RenderSettings &render_settings,
         const RenderResources &render_resources,
@@ -110,10 +147,26 @@ namespace Engine {
         animations.tick_animations(delta_time);
     }
 
+    void EdgeActor::set_highlighted(const bool highlighted) {
+        if (highlighted) {
+            if (!is_highlighted) {
+                auto linear_animation = new LinearAnimation(0.2f, .0f, 1.0f, OnAnimationFinished::DO_NOTHING);
+                animations.add_animation_for(EdgeActorAnimations::HIGHLIGHTED, linear_animation);
+            } else {
+                animations.get_animation_for(EdgeActorAnimations::HIGHLIGHTED)->reset();
+            }
+        } else {
+            if (is_highlighted) {
+                animations.remove_animation_for(EdgeActorAnimations::HIGHLIGHTED);
+            }
+        }
+        is_highlighted = highlighted;
+    }
+
+
     bool EdgeActor::get_highlighted() const {
         return is_highlighted && animations.get_animation_for(EdgeActorAnimations::HIGHLIGHTED)->is_finished();
     }
-
 
     void EdgeActor::render() const {
         float dir = static_cast<float>(nominal_edge_coord.edge_direction);
@@ -187,21 +240,5 @@ namespace Engine {
                        .x = position.x + cos(move_dir) * (width / 2 + starting_delta),
                        .y = position.y + sin(move_dir) * (width / 2 + starting_delta),
                    }, mouse_position) < render_settings.hex_size * 0.7f / 3.0f;
-    }
-
-    void EdgeActor::set_highlighted(const bool highlighted) {
-        if (highlighted) {
-            if (!is_highlighted) {
-                auto linear_animation = new LinearAnimation(0.2f, .0f, 1.0f, OnAnimationFinished::DO_NOTHING);
-                animations.add_animation_for(EdgeActorAnimations::HIGHLIGHTED, linear_animation);
-            } else {
-                animations.get_animation_for(EdgeActorAnimations::HIGHLIGHTED)->reset();
-            }
-        } else {
-            if (is_highlighted) {
-                animations.remove_animation_for(EdgeActorAnimations::HIGHLIGHTED);
-            }
-        }
-        is_highlighted = highlighted;
     }
 }

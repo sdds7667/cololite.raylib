@@ -38,14 +38,21 @@ namespace Engine {
         ~ResourceSprites();
     };
 
+    struct UISprites {
+        Texture2D upgrade;
+    };
+
     struct Sprites {
         Texture2D house;
+        Texture2D town;
     };
+
 
     struct RenderResources {
         Font map_font;
         ResourceSprites resource_sprites;
         Sprites sprites;
+        UISprites ui;
     };
 
     struct RenderSettings {

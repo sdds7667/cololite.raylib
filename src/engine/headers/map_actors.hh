@@ -19,7 +19,9 @@ namespace Engine {
         Map::Corner *corner;
         Map::CornerCoord nominal_corner_coord;
         Vector2 position;
+        Color base_color;
 
+        bool is_upgradable;
         bool is_highlighted;
 
     protected:
@@ -50,6 +52,12 @@ namespace Engine {
         [[nodiscard]] const Map::Corner *get_corner() const;
 
         void set_house(House *house);
+
+        void set_upgradable(bool upgradable);
+
+        [[nodiscard]] bool get_is_upgradable() const;
+
+        void set_base_color(Color base_color);
 
         ~CornerActor() override;
 

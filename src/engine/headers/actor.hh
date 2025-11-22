@@ -111,6 +111,7 @@ namespace Engine {
         Rectangle m_bounding_box{};
         Vector2 m_anchor{};
         Vector2 m_position{};
+        std::optional<Color> m_background_color{};
 
         void update_children_positions() const;
 
@@ -127,6 +128,9 @@ namespace Engine {
         void add_actor_at_relative_position(BoundedBoxActor *actor, const Vector2 &relative_position);
 
         void remove_actor(const BoundedBoxActor *actor);
+
+        void set_background_color(const std::optional<Color> &color);
+
 
         void update(float deltaTime) override;
 

@@ -156,6 +156,10 @@ namespace Engine {
 
     void ContainerActor::remove_actor(const BoundedBoxActor *actor) { throw std::runtime_error("Not implemented"); }
 
+    void ContainerActor::set_background_color(const std::optional<Color> &color) {
+        m_background_color = color;
+    }
+
 
     void ContainerActor::update(float deltaTime) {
         for (const auto &actor: m_actors) {
@@ -164,11 +168,13 @@ namespace Engine {
     }
 
     void ContainerActor::render() const {
-        DrawRectangleRec(m_bounding_box, BLACK);
+        if (m_background_color.has_value()) {
+            DrawRectangleRounded(m_bounding_box, .1, 5, m_background_color.value());
+        }
         for (const auto &actor: m_actors) {
             actor->render();
         }
-        DrawCircleV(get_position(), 5.f, RED);
+        // DrawCircleV(get_position(), 5.f, RED);
     }
 
     const Vector2 &ContainerActor::get_position() const { return m_position; }
@@ -344,9 +350,9 @@ namespace Engine {
 
     void ResourceDisplayActor::render() const {
         ContainerActor::render();
-        for (const auto [resource, actor]: resource_bounding_box) {
-            DrawRectangleLinesEx(actor->get_bounding_box(), 3.0f, WHITE);
-        }
+        // for (const auto [resource, actor]: resource_bounding_box) {
+        //     DrawRectangleLinesEx(actor->get_bounding_box(), 3.0f, WHITE);
+        // }
     }
 
     std::optional<Map::Resource> ResourceDisplayActor::is_over_resource(const Vector2 &mouse_position) const {

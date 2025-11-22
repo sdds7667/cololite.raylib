@@ -45,16 +45,18 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ce1b1433-5376-4e80-9a05-f7da3f526e7e" name="Changes" comment="Container Actor">
+    <list default="true" id="ce1b1433-5376-4e80-9a05-f7da3f526e7e" name="Changes" comment="Trade system">
+      <change afterPath="$PROJECT_DIR$/src/resources/sprites/resources/village.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/resources/sprites/ui/upgrade.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/engine/actor.cc" beforeDir="false" afterPath="$PROJECT_DIR$/src/engine/actor.cc" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/engine/engine.cc" beforeDir="false" afterPath="$PROJECT_DIR$/src/engine/engine.cc" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/engine/headers/actor.hh" beforeDir="false" afterPath="$PROJECT_DIR$/src/engine/headers/actor.hh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/engine/headers/engine_settings.hh" beforeDir="false" afterPath="$PROJECT_DIR$/src/engine/headers/engine_settings.hh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/map/headers/coords.hh" beforeDir="false" afterPath="$PROJECT_DIR$/src/map/headers/coords.hh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/map/headers/game.hh" beforeDir="false" afterPath="$PROJECT_DIR$/src/map/headers/game.hh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/map/headers/map.hh" beforeDir="false" afterPath="$PROJECT_DIR$/src/map/headers/map.hh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/map/map.cc" beforeDir="false" afterPath="$PROJECT_DIR$/src/map/map.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/engine/headers/map_actors.hh" beforeDir="false" afterPath="$PROJECT_DIR$/src/engine/headers/map_actors.hh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/engine/map_actors.cc" beforeDir="false" afterPath="$PROJECT_DIR$/src/engine/map_actors.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/resources/sprites/house.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/resources/sprites/house.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/resources/sprites/village.png" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -246,46 +248,47 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "CMake Application.cololite.executor": "Run",
-    "CMake Debug.cololite.executor": "Debug",
-    "Google Test.hex_map_creation.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.RadMigrateCodeStyle": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.cidr.known.project.marker": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.readMode.enableVisualFormatting": "true",
-    "RunOnceActivity.west.config.association.type.startup.service": "true",
-    "cf.advertisement.text.overridden": "true",
-    "cf.first.check.clang-format": "false",
-    "cidr.known.project.marker": "true",
-    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "main",
-    "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "/Users/iplamade/Work/GameDev/cololite-raylib-cmake/src/resources/sprites/resources",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "CPPToolchains",
-    "to.speed.mode.migration.done": "true",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;CMake Application.cololite.executor&quot;: &quot;Run&quot;,
+    &quot;CMake Debug.cololite.executor&quot;: &quot;Debug&quot;,
+    &quot;Google Test.hex_map_creation.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.RadMigrateCodeStyle&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.west.config.association.type.startup.service&quot;: &quot;true&quot;,
+    &quot;cf.advertisement.text.overridden&quot;: &quot;true&quot;,
+    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
+    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/iplamade/Work/GameDev/cololite-raylib-cmake/src/resources/sprites/resources&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;CPPToolchains&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/resources/sprites/resources" />
       <recent name="$PROJECT_DIR$/src/resources" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/src/resources/sprites/resources" />
-      <recent name="$PROJECT_DIR$/src/map" />
       <recent name="$PROJECT_DIR$/src/resources/sprites" />
-      <recent name="$PROJECT_DIR$/src/engine" />
+      <recent name="$PROJECT_DIR$/src/resources/sprites/resources" />
+      <recent name="$PROJECT_DIR$/src/resources/sprites/ui" />
+      <recent name="$PROJECT_DIR$/src/resources/sprites/resources/" />
+      <recent name="$PROJECT_DIR$/src/map" />
     </key>
   </component>
   <component name="RunManager" selected="CMake Application.cololite">
@@ -423,7 +426,8 @@
       <workItem from="1763168519955" duration="116000" />
       <workItem from="1763201138662" duration="7043000" />
       <workItem from="1763327903771" duration="8025000" />
-      <workItem from="1763722686219" duration="16658000" />
+      <workItem from="1763722686219" duration="17082000" />
+      <workItem from="1763818971861" duration="9369000" />
     </task>
     <task id="LOCAL-00001" summary="Cleaning up the code base">
       <option name="closed" value="true" />
@@ -481,7 +485,15 @@
       <option name="project" value="LOCAL" />
       <updated>1763730482123</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Trade system">
+      <option name="closed" value="true" />
+      <created>1763802153164</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1763802153164</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -510,7 +522,8 @@
     <MESSAGE value="IDEA Support" />
     <MESSAGE value="Building and animations" />
     <MESSAGE value="Container Actor" />
-    <option name="LAST_COMMIT_MESSAGE" value="Container Actor" />
+    <MESSAGE value="Trade system" />
+    <option name="LAST_COMMIT_MESSAGE" value="Trade system" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -522,7 +535,7 @@
         </line-breakpoint>
         <line-breakpoint type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/src/engine/engine.cc</url>
-          <line>452</line>
+          <line>481</line>
           <option name="timeStamp" value="25" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
