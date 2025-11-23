@@ -154,7 +154,7 @@ namespace Engine {
         }
     }
 
-    void enable_building_spots_with_roads(std::vector<Actor *> &actors) {
+    void enable_building_spots_with_roads(std::vector<IActor *> &actors) {
         for (auto actor: actors) {
             auto *corner_actor = dynamic_cast<CornerActor *>(actor);
             if (corner_actor == nullptr)
@@ -186,7 +186,7 @@ namespace Engine {
         }
     }
 
-    void enable_building_spots(std::vector<Actor *> &actors) {
+    void enable_building_spots(std::vector<IActor *> &actors) {
         for (auto actor: actors) {
             auto *corner_actor = dynamic_cast<CornerActor *>(actor);
             if (corner_actor == nullptr)
@@ -211,7 +211,7 @@ namespace Engine {
         }
     }
 
-    void enable_road_spots(std::vector<Actor *> &actors) {
+    void enable_road_spots(std::vector<IActor *> &actors) {
         for (auto actor: actors) {
             auto *edge_actor = dynamic_cast<EdgeActor *>(actor);
             if (edge_actor == nullptr)
@@ -242,7 +242,7 @@ namespace Engine {
         }
     }
 
-    void enable_upgrade_spots(const std::vector<Actor *> actors) {
+    void enable_upgrade_spots(const std::vector<IActor *> actors) {
         for (auto actor: actors) {
             auto *corner_actor = dynamic_cast<CornerActor *>(actor);
             if (corner_actor == nullptr)
@@ -352,7 +352,7 @@ namespace Engine {
         std::vector<Roll> discard_pile;
         rolls_queue.insert(rolls_queue.end(), rolls.begin(), rolls.end());
 
-        std::vector<Actor *> actors;
+        std::vector<IActor *> actors;
         AnimationSequence animation_sequence{};
         Game::GameSequence game_sequence;
 
@@ -455,7 +455,7 @@ namespace Engine {
                         auto *corner_actor = dynamic_cast<CornerActor *>(actor);
                         if (corner_actor == nullptr)
                             continue;
-                        if (!corner_actor->is_clicked(mouse_position))
+                        if (!corner_actor->is_mouse_over(mouse_position))
                             continue;
                         if (!corner_actor->get_highlighted()) {
                             // display error message
@@ -493,7 +493,7 @@ namespace Engine {
                         auto *edge_actor = dynamic_cast<EdgeActor *>(actor);
                         if (edge_actor == nullptr)
                             continue;
-                        if (!edge_actor->is_clicked(mouse_position))
+                        if (!edge_actor->is_mouse_over(mouse_position))
                             continue;
                         if (!edge_actor->get_highlighted()) {
                             // display error message
@@ -564,7 +564,7 @@ namespace Engine {
                         auto *corner_actor = dynamic_cast<CornerActor *>(actor);
                         if (corner_actor == nullptr)
                             continue;
-                        if (!corner_actor->is_clicked(mouse_position))
+                        if (!corner_actor->is_mouse_over(mouse_position))
                             continue;
                         if (corner_actor->get_highlighted()) {
                             // display error message
@@ -595,7 +595,7 @@ namespace Engine {
                         auto *edge_actor = dynamic_cast<EdgeActor *>(actor);
                         if (edge_actor == nullptr)
                             continue;
-                        if (!edge_actor->is_clicked(mouse_position))
+                        if (!edge_actor->is_mouse_over(mouse_position))
                             continue;
                         if (!edge_actor->get_highlighted()) {
                             // display error message

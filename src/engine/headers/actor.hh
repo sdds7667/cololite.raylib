@@ -7,66 +7,14 @@
 #include <raylib.h>
 #include <unordered_map>
 #include <vector>
+#include "generic_actors.hh"
 
 #include "engine_settings.hh"
 #include "map.hh"
 
 namespace Engine {
-    class Actor {
-    public:
-        virtual ~Actor() = default;
-
-        virtual void update(float deltaTime) = 0;
-
-        virtual void render() const = 0;
-    };
-
-    class ClickableActor {
-    public:
-        virtual ~ClickableActor() = default;
-
-        [[nodiscard]] virtual bool is_clicked(const Vector2 &mouse_position) const = 0;
-    };
-
-    enum class SpriteAnchor {
-        TOP_LEFT,
-        TOP_CENTER,
-        TOP_RIGHT,
-        MIDDLE_LEFT,
-        MIDDLE_CENTER,
-        MIDDLE_RIGHT,
-        BOTTOM_LEFT,
-        BOTTOM_CENTER,
-        BOTTOM_RIGHT,
-        CUSTOM
-    };
-
-    class BoundedBoxActor : public Actor {
-    public:
-        virtual ~BoundedBoxActor() = default;
-
-        [[nodiscard]] virtual const Vector2 &get_position() const = 0;
-
-        [[nodiscard]] virtual Vector2 get_anchored_position() const = 0;
-
-        [[nodiscard]] virtual float get_width() const = 0;
-
-        [[nodiscard]] virtual float get_height() const = 0;
-
-        [[nodiscard]] virtual const Vector2 &get_anchor() const = 0;
-
-        virtual void set_anchor(const Vector2 &anchor) = 0;
-
-        virtual void set_anchor(SpriteAnchor anchor) = 0;
-
-        virtual void set_position(const Vector2 &position) = 0;
-    };
-
     class FixedSizedTextActor : public BoundedBoxActor {
     protected:
-        Vector2 m_position{};
-        Vector2 m_anchor{};
-        Rectangle m_bounding_box{};
         std::string m_text;
         const Font &m_font;
         Color m_color;
@@ -75,29 +23,11 @@ namespace Engine {
     public:
         FixedSizedTextActor(const std::string &text, const Font &font, Color color, float font_size, Vector2 position);
 
+        ~FixedSizedTextActor() override = default;
+
         void update(float deltaTime) override;
 
         void render() const override;
-
-        [[nodiscard]] const Vector2 &get_position() const override;
-
-        [[nodiscard]] const Rectangle &get_bounding_box() const;
-
-        [[nodiscard]] const Vector2 &get_anchor() const override;
-
-        void set_anchor(const Vector2 &anchor) override;
-
-        void set_anchor(SpriteAnchor anchor) override;
-
-        void set_position(const Vector2 &position) override;
-
-        [[nodiscard]] Vector2 get_anchored_position() const override;
-
-        [[nodiscard]] float get_width() const override;
-
-        [[nodiscard]] float get_height() const override;
-
-        ~FixedSizedTextActor() override = default;
 
         void set_text(const std::string &text);
 
@@ -108,9 +38,6 @@ namespace Engine {
     protected:
         std::vector<BoundedBoxActor *> m_actors{};
         std::vector<Vector2> m_actor_relative_positions{};
-        Rectangle m_bounding_box{};
-        Vector2 m_anchor{};
-        Vector2 m_position{};
         std::optional<Color> m_background_color{};
 
         void update_children_positions() const;
@@ -124,113 +51,46 @@ namespace Engine {
 
         bool changes_propagated_to_children = true;
 
-
         void add_actor_at_relative_position(BoundedBoxActor *actor, const Vector2 &relative_position);
+
+        void set_position(const Vector2 &position) override;
 
         void remove_actor(const BoundedBoxActor *actor);
 
         void set_background_color(const std::optional<Color> &color);
 
-
         void update(float deltaTime) override;
 
         void render() const override;
 
-
-        [[nodiscard]] const Vector2 &get_position() const override;
-
-        [[nodiscard]] float get_width() const override;
-
-        [[nodiscard]] float get_height() const override;
-
-        [[nodiscard]] const Vector2 &get_anchor() const override;
-
-        void set_anchor(const Vector2 &anchor) override;
-
-        void set_anchor(SpriteAnchor anchor) override;
-
-        void set_position(const Vector2 &position) override;
-
-        [[nodiscard]] Vector2 get_anchored_position() const override;
-
-        [[nodiscard]] Rectangle get_bounding_box() const;
-
-        void cleanup();
+        void cleanup() const;
     };
 
 
     class SpriteActor : public BoundedBoxActor {
-    protected:
-        Vector2 m_position{};
         float m_scale = 1.0f;
-        Vector2 m_anchor{};
         Texture2D texture{};
 
     public:
         explicit SpriteActor(Vector2 position);
 
-        SpriteActor(const Texture2D &texture, Vector2 position, SpriteAnchor anchor = SpriteAnchor::TOP_LEFT);
+        SpriteActor(const Texture2D &texture, Vector2 position, AlignmentAnchor anchor = AlignmentAnchor::TOP_LEFT);
 
-        [[nodiscard]] const Vector2 &get_position() const override;
+        void set_position(const Vector2 &position) override;
 
         virtual void set_scale(float scale);
 
         [[nodiscard]] virtual float get_scale() const;
 
-        void set_anchor(SpriteAnchor anchor) override;
-
-        [[nodiscard]] float get_width() const override;
-
-        [[nodiscard]] float get_height() const override;
-
         void update(float deltaTime) override;
 
         void render() const override;
-
-        [[nodiscard]] Vector2 get_anchored_position() const override;
-
-        [[nodiscard]] const Vector2 &get_anchor() const override;
-
-        void set_anchor(const Vector2 &anchor) override;
-
-        void set_position(const Vector2 &position) override;
-    };
-
-    class BoundingBoxActor : public BoundedBoxActor {
-        Rectangle m_bounding_box;
-        Vector2 m_position{};
-        Vector2 m_anchor{};
-
-    public:
-        explicit BoundingBoxActor(const Rectangle &m_bounding_box);
-
-        void update(float deltaTime) override;
-
-        void render() const override;
-
-        Rectangle get_bounding_box() const;
-
-        [[nodiscard]] const Vector2 &get_position() const override;
-
-        [[nodiscard]] Vector2 get_anchored_position() const override;
-
-        [[nodiscard]] float get_width() const override;
-
-        [[nodiscard]] float get_height() const override;
-
-        [[nodiscard]] const Vector2 &get_anchor() const override;
-
-        void set_anchor(const Vector2 &anchor) override;
-
-        void set_anchor(SpriteAnchor anchor) override;
-
-        void set_position(const Vector2 &position) override;
     };
 
     class ResourceDisplayActor : public ContainerActor {
         std::unordered_map<Map::Resource, FixedSizedTextActor *> resource_text_actors;
         std::unordered_map<Map::Resource, FixedSizedTextActor *> delta_resources_actors;
-        std::unordered_map<Map::Resource, BoundingBoxActor *> resource_bounding_box;
+        std::unordered_map<Map::Resource, BoundedBoxActor *> resource_bounding_box;
         std::unordered_map<Map::Resource, ContainerActor *> resource_sprites;
 
     public:
@@ -248,20 +108,8 @@ namespace Engine {
 
         [[nodiscard]] std::optional<Map::Resource> is_over_resource_sprite(const Vector2 &mouse_position) const;
 
-        ContainerActor *get_drag_and_drop_resource(const RenderResources &resources,
-                                                   const Vector2 &mouse_position) const;
-    };
-
-
-    class ButtonActor : public Actor, public ClickableActor {
-        SpriteActor *m_sprite_actor;
-
-    public:
-        void update(float deltaTime) override;
-
-        void render() const override;
-
-        [[nodiscard]] bool is_clicked(const Vector2 &mouse_position) const override;
+        [[nodiscard]] ContainerActor *get_drag_and_drop_resource(const RenderResources &resources,
+                                                                 const Vector2 &mouse_position) const;
     };
 } // namespace Engine
 

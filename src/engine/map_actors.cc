@@ -129,7 +129,7 @@ namespace Engine {
         animations.remove_animation_for(CornerActorAnimations::BUILD_HOUSE);
     }
 
-    bool CornerActor::is_clicked(const Vector2 &mouse_position) const {
+    bool CornerActor::is_mouse_over(const Vector2 &mouse_position) {
         return Vector2Distance(position, mouse_position) < render_settings.hex_size * 1.0f / 3.0f;
     }
 
@@ -230,7 +230,7 @@ namespace Engine {
         }
     }
 
-    bool EdgeActor::is_clicked(const Vector2 &mouse_position) const {
+    bool EdgeActor::is_mouse_over(const Vector2 &mouse_position) {
         float dir = static_cast<float>(nominal_edge_coord.edge_direction);
         float move_dir = (PI / 3.0f) * (dir + 2.0);
         float width = render_settings.full_hex_size - 1.80f * render_settings.hex_size * 1.0f / 3.0f;

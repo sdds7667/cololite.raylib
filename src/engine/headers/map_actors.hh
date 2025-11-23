@@ -12,7 +12,7 @@
 #include "engine_settings.hh"
 
 namespace Engine {
-    class CornerActor : public Actor, public ClickableActor {
+    class CornerActor : public IActor, public IClickableActor {
         const RenderSettings &render_settings;
         const RenderResources &render_resources;
         const ColorScheme &color_scheme;
@@ -61,10 +61,10 @@ namespace Engine {
 
         ~CornerActor() override;
 
-        [[nodiscard]] bool is_clicked(const Vector2 &mouse_position) const override;
+        [[nodiscard]] bool is_mouse_over(const Vector2 &mouse_position) override;
     };
 
-    class EdgeActor : public Actor, public ClickableActor {
+    class EdgeActor : public IActor, public IClickableActor {
         const RenderSettings &render_settings;
         const RenderResources &render_resources;
         const ColorScheme &color_scheme;
@@ -106,7 +106,7 @@ namespace Engine {
 
         ~EdgeActor() override;
 
-        [[nodiscard]] bool is_clicked(const Vector2 &mouse_position) const override;
+        [[nodiscard]] bool is_mouse_over(const Vector2 &mouse_position) override;
     };
 }
 
