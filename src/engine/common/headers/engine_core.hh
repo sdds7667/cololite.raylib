@@ -13,6 +13,6 @@ namespace Engine {
     void render();
 
     void terminate();
-}
+} // namespace Engine
 
-#endif //COLOLITE_ENGINE_CORE_HH
+#endif // COLOLITE_ENGINE_CORE_HH

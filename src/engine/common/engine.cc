@@ -1,5 +1,6 @@
 #include "engine.hh"
 #include <iostream>
+#include <numbers>
 #include <random>
 #include <ranges>
 #include "actor.hh"
@@ -22,9 +23,10 @@ namespace Engine {
     };
 
 
-    float sqrt3 = static_cast<float>(sqrt(3));
+    constexpr float sqrt3 = std::numbers::sqrt3_v<float>;
 
-    const Texture2D &get_texture_for_resource(const RenderResources &render_resources, const Map::Resource &resource) {
+    auto get_texture_for_resource(const RenderResources &render_resources, const Map::Resource &resource)
+            -> const Texture2D & {
         switch (resource) {
             case Map::Resource::BRICK:
                 return render_resources.resource_sprites.bricks;
@@ -42,7 +44,7 @@ namespace Engine {
         return render_resources.resource_sprites.cactus;
     }
 
-    Color get_color_for_resource(const ColorScheme &color_scheme, const Map::Resource &resource) {
+    auto get_color_for_resource(const ColorScheme &color_scheme, const Map::Resource &resource) -> Color {
         switch (resource) {
             case Map::Resource::BRICK:
                 return color_scheme.brickRed;
@@ -60,23 +62,21 @@ namespace Engine {
         return BLACK;
     }
 
-    float get_direction_for_corner(const Map::HexCornerDirection &corner_direction) {
+    auto get_direction_for_corner(const Map::HexCornerDirection &corner_direction) -> float {
         constexpr float sixty_degrees = PI / 3.0f;
         return sixty_degrees * static_cast<float>(corner_direction);
     }
 
-    float get_direction_for_edge(const Map::HexEdgeDirection &edge_direction) {
+    auto get_direction_for_edge(const Map::HexEdgeDirection &edge_direction) -> float {
         constexpr float sixty_degrees = PI / 3.0f;
         return static_cast<float>(edge_direction) * sixty_degrees;
     }
 
 
     Vector2 compute_hex_center_position(float hex_size, const Map::HexCoord2 &hex_coord) {
-        return {
-            .x = hex_size * 3.0f / 2.0f * static_cast<float>(hex_coord.q),
-            .y = hex_size *
-                 (sqrt3 / 2.0f * static_cast<float>(hex_coord.q) + sqrt3 * static_cast<float>(hex_coord.r))
-        };
+        return {.x = hex_size * 3.0f / 2.0f * static_cast<float>(hex_coord.q),
+                .y = hex_size *
+                     (sqrt3 / 2.0f * static_cast<float>(hex_coord.q) + sqrt3 * static_cast<float>(hex_coord.r))};
     }
 
     void render_map(const RenderSettings &render_settings, const RenderResources &render_resources,
@@ -105,22 +105,19 @@ namespace Engine {
             auto texture = get_texture_for_resource(render_resources, hex->resource);
             float scale = render_settings.hex_size * (2.5f / 3.0f) / static_cast<float>(texture.width);
 
-            const Vector2 sprite_center_position = {
-                .x = hex_position.x - render_settings.hex_size * 1.0f / 3.0f,
-                .y = hex_position.y - render_settings.hex_size * 1.0f / 3.0f
-            };
+            const Vector2 sprite_center_position = {.x = hex_position.x - render_settings.hex_size * 1.0f / 3.0f,
+                                                    .y = hex_position.y - render_settings.hex_size * 1.0f / 3.0f};
 
             const Vector2 sprite_position = {
-                .x = sprite_center_position.x - scale * static_cast<float>(texture.width) / 2.0f,
-                .y = sprite_center_position.y - scale * static_cast<float>(texture.height) / 2.0f
-            };
+                    .x = sprite_center_position.x - scale * static_cast<float>(texture.width) / 2.0f,
+                    .y = sprite_center_position.y - scale * static_cast<float>(texture.height) / 2.0f};
 
             DrawTextureEx(get_texture_for_resource(render_resources, hex->resource), sprite_position, 0.0f, scale,
                           WHITE);
 
             const Vector2 circle_position = {
-                .x = hex_position.x + render_settings.hex_size * 1.0f / 3.0f,
-                .y = hex_position.y + render_settings.hex_size * 1.0f / 3.0f,
+                    .x = hex_position.x + render_settings.hex_size * 1.0f / 3.0f,
+                    .y = hex_position.y + render_settings.hex_size * 1.0f / 3.0f,
             };
 
             DrawCircleV(circle_position, render_settings.hex_size * 1.0f / 3.0f, color_scheme.mapBorder);
@@ -143,8 +140,8 @@ namespace Engine {
         constexpr float circle_radius = 32.0f;
         for (size_t i = 0; i < 5; i++) {
             Vector2 circle_position = {
-                .x = starting_x + (spacing + circle_radius * 2) * static_cast<float>(i),
-                .y = starting_y,
+                    .x = starting_x + (spacing + circle_radius * 2) * static_cast<float>(i),
+                    .y = starting_y,
             };
             std::string number = std::to_string(rolls.at(i).get_roll());
             Vector2 text_size = MeasureTextEx(render_resources.map_font, number.c_str(), 32.0, 0.0f);
@@ -269,49 +266,48 @@ namespace Engine {
         start_screen_height = static_cast<int>(height - 28);
 #endif // __APPLE__
 
-        constexpr ColorScheme color_scheme = {
-            .grassGreen = {83, 130, 75, 255},
-            .warmWoodBrown = {136, 84, 24, 255},
-            .stoneGray = {121, 121, 121, 255},
-            .brickRed = {174, 32, 36, 255},
-            .wheatYellow = {244, 201, 95, 255},
-            .desertSand = {225, 169, 95, 255},
-            // .mapBorder = {120, 120, 120, 255},
-            // .circleBorder = {125, 125, 125, 255},
-            .mapBorder = {30, 30, 30, 255},
-            .circleBorder = {30, 30, 30, 255},
-            .color1 = {0, 112, 110, 255},
-            .color2 = {255, 99, 71, 255},
-            .color3 = {98, 44, 168, 255},
-            .color4 = {218, 165, 32, 255}
-        };
+        constexpr ColorScheme color_scheme = {.grassGreen = {83, 130, 75, 255},
+                                              .warmWoodBrown = {136, 84, 24, 255},
+                                              .stoneGray = {121, 121, 121, 255},
+                                              .brickRed = {174, 32, 36, 255},
+                                              .wheatYellow = {244, 201, 95, 255},
+                                              .desertSand = {225, 169, 95, 255},
+                                              // .mapBorder = {120, 120, 120, 255},
+                                              // .circleBorder = {125, 125, 125, 255},
+                                              .mapBorder = {30, 30, 30, 255},
+                                              .circleBorder = {30, 30, 30, 255},
+                                              .color1 = {0, 112, 110, 255},
+                                              .color2 = {255, 99, 71, 255},
+                                              .color3 = {98, 44, 168, 255},
+                                              .color4 = {218, 165, 32, 255}};
 
         InitWindow(start_screen_width, start_screen_height, "raylib [core] example - basic window");
         constexpr RenderSettings render_settings{.hex_size = 70, .full_hex_size = 90};
 
         const RenderResources render_resources = {
-            .map_font = LoadFontEx("resources/OpenSans-Regular.ttf", 128, nullptr, 250),
-            .resource_sprites =
-            {
-                .bricks = LoadTexture("resources/sprites/resources/resource_bricks.png"),
-                .sheep = LoadTexture("resources/sprites/resources/resource_sheep.png"),
-                .wood = LoadTexture("resources/sprites/resources/resource_wood.png"),
-                .cactus = LoadTexture("resources/sprites/resources/resource_cactus.png"),
-                .stone = LoadTexture("resources/sprites/resources/resource_stone.png"),
-                .wheat = LoadTexture("resources/sprites/resources/resource_wheat.png"),
-                .random = LoadTexture("resources/sprites/resources/resource_random.png"),
-                .resource_outline = LoadTexture("resources/sprites/resources/resource_outline.png"),
-                .resource_stack = LoadTexture("resources/sprites/resources/coin_stack.png"),
-                .trade = LoadTexture("resources/sprites/resources/trade.png"),
-            },
-            .sprites =
-            {
-                .house = LoadTexture("resources/sprites/house.png"),
-                .town = LoadTexture("resources/sprites/village.png"),
-            },
-            .ui = {
-                .upgrade = LoadTexture("resources/sprites/ui/upgrade.png"),
-            }
+                .map_font = LoadFontEx("resources/OpenSans-Regular.ttf", 128, nullptr, 250),
+                .resource_sprites =
+                        {
+                                .bricks = LoadTexture("resources/sprites/resources/resource_bricks.png"),
+                                .sheep = LoadTexture("resources/sprites/resources/resource_sheep.png"),
+                                .wood = LoadTexture("resources/sprites/resources/resource_wood.png"),
+                                .cactus = LoadTexture("resources/sprites/resources/resource_cactus.png"),
+                                .stone = LoadTexture("resources/sprites/resources/resource_stone.png"),
+                                .wheat = LoadTexture("resources/sprites/resources/resource_wheat.png"),
+                                .random = LoadTexture("resources/sprites/resources/resource_random.png"),
+                                .resource_outline = LoadTexture("resources/sprites/resources/resource_outline.png"),
+                                .resource_stack = LoadTexture("resources/sprites/resources/coin_stack.png"),
+                                .trade = LoadTexture("resources/sprites/resources/trade.png"),
+                        },
+                .sprites =
+                        {
+                                .house = LoadTexture("resources/sprites/house.png"),
+                                .town = LoadTexture("resources/sprites/village.png"),
+                        },
+                .ui =
+                        {
+                                .upgrade = LoadTexture("resources/sprites/ui/upgrade.png"),
+                        }
 
 
         };
@@ -322,21 +318,21 @@ namespace Engine {
         const auto screen_height = static_cast<float>(GetScreenHeight());
 
         Camera2D camera{
-            .offset = {0.0f, 0.0f},
-            .target = {-screen_width / 2.0f, -screen_height / 2.0f},
-            .rotation = 0.0f,
-            .zoom = 1.0f,
+                .offset = {0.0f, 0.0f},
+                .target = {-screen_width / 2.0f, -screen_height / 2.0f},
+                .rotation = 0.0f,
+                .zoom = 1.0f,
         };
 
 
         std::unordered_map<Map::Resource, int> player_resources = {
-            {Map::Resource::WHEAT, 20}, {Map::Resource::WOOD, 20}, {Map::Resource::BRICK, 20},
-            {Map::Resource::SHEEP, 20}, {Map::Resource::STONE, 20},
+                {Map::Resource::WHEAT, 20}, {Map::Resource::WOOD, 20},  {Map::Resource::BRICK, 20},
+                {Map::Resource::SHEEP, 20}, {Map::Resource::STONE, 20},
         };
 
         std::unordered_map<Map::Resource, int> delta_resources = {
-            {Map::Resource::WHEAT, 0}, {Map::Resource::WOOD, 0}, {Map::Resource::BRICK, 0},
-            {Map::Resource::SHEEP, 0}, {Map::Resource::STONE, 0},
+                {Map::Resource::WHEAT, 0}, {Map::Resource::WOOD, 0},  {Map::Resource::BRICK, 0},
+                {Map::Resource::SHEEP, 0}, {Map::Resource::STONE, 0},
         };
 
         Map::Map map = Map::Map::build_map_of_size(2);
@@ -374,7 +370,7 @@ namespace Engine {
 
         auto player_resources_container = ResourceDisplayActor(render_resources, player_resources);
         player_resources_container.set_position(
-            {-GetScreenWidth() / 2.0f + 100.0f, -GetScreenHeight() / 2.0f + 100.0f});
+                {-GetScreenWidth() / 2.0f + 100.0f, -GetScreenHeight() / 2.0f + 100.0f});
         player_resources_container.set_background_color(color_scheme.mapBorder);
 
         actors.push_back(&player_resources_container);
@@ -390,7 +386,7 @@ namespace Engine {
 
 
             actors.push_back(
-                new EdgeActor(render_settings, render_resources, color_scheme, edge, coord, edge_position));
+                    new EdgeActor(render_settings, render_resources, color_scheme, edge, coord, edge_position));
         }
         for (auto [coord, corner]: map.get_corners()) {
             const auto hex_position = compute_hex_center_position(render_settings.full_hex_size, coord.hex_coord);
@@ -400,7 +396,7 @@ namespace Engine {
             const auto corner_position = Vector2Add(hex_position, corner_delta);
 
             actors.push_back(
-                new CornerActor(render_settings, render_resources, color_scheme, corner, coord, corner_position));
+                    new CornerActor(render_settings, render_resources, color_scheme, corner, coord, corner_position));
         }
 
         while (!WindowShouldClose()) {
@@ -436,8 +432,8 @@ namespace Engine {
                                 }
                             }
 
-                            if (player_resources[Map::Resource::STONE] >= 3 && player_resources[Map::Resource::WHEAT] >=
-                                2) {
+                            if (player_resources[Map::Resource::STONE] >= 3 &&
+                                player_resources[Map::Resource::WHEAT] >= 2) {
                                 enable_upgrade_spots(actors);
                             }
                         }
@@ -642,8 +638,8 @@ namespace Engine {
                                 enable_building_spots_with_roads(actors);
                             }
                         }
-                        if (player_resources[Map::Resource::STONE] >= 3 && player_resources[Map::Resource::WHEAT] >=
-                            2) {
+                        if (player_resources[Map::Resource::STONE] >= 3 &&
+                            player_resources[Map::Resource::WHEAT] >= 2) {
                             enable_upgrade_spots(actors);
                         }
                     }
@@ -653,7 +649,7 @@ namespace Engine {
                             if (player_resources[resource.value()] >= 4) {
                                 dragged_resource = resource.value();
                                 drag_and_drop_trade = player_resources_container.get_drag_and_drop_resource(
-                                    render_resources, mouse_position);
+                                        render_resources, mouse_position);
                             }
                         }
                     }
@@ -694,8 +690,8 @@ namespace Engine {
                                 enable_building_spots_with_roads(actors);
                             }
                         }
-                        if (player_resources[Map::Resource::STONE] >= 3 && player_resources[Map::Resource::WHEAT] >=
-                            2) {
+                        if (player_resources[Map::Resource::STONE] >= 3 &&
+                            player_resources[Map::Resource::WHEAT] >= 2) {
                             enable_upgrade_spots(actors);
                         }
 
@@ -713,7 +709,7 @@ namespace Engine {
                             corner_actor2->set_highlighted(false);
                     }
                     game_sequence.emplace_back(
-                        Game::GamePhaseParameterized::for_no_parameter(Game::GamePhase::PLAYER_TURN));
+                            Game::GamePhaseParameterized::for_no_parameter(Game::GamePhase::PLAYER_TURN));
                     game_sequence.emplace_back(Game::GamePhaseParameterized::for_no_parameter(Game::GamePhase::ROLL));
                     game_sequence.emplace_back(Game::GamePhaseParameterized::wait_for_time(0.2));
                     game_phase = &do_nothing;
@@ -745,20 +741,15 @@ namespace Engine {
 
             if (game_phase->get_phase() == Game::GamePhase::ROLL) {
                 std::string text = "Press space to roll";
-                Vector2 center_bottom = {
-                    (GetScreenWidth() / 2.0f),
-                    static_cast<float>(GetScreenHeight() - 100)
-                };
+                Vector2 center_bottom = {(GetScreenWidth() / 2.0f), static_cast<float>(GetScreenHeight() - 100)};
                 Vector2 text_size = MeasureTextEx(render_resources.map_font, text.c_str(), 32.0, 0.0f);
                 Vector2 text_position =
                         Vector2Subtract(center_bottom, Vector2Divide(text_size, {.x = 2.0f, .y = 2.0f}));
                 DrawTextEx(render_resources.map_font, text.c_str(), text_position, 32.0, 0.0f, WHITE);
             } else if (game_phase->get_phase() == Game::GamePhase::PLAYER_TURN) {
                 std::string text = "Press space to end turn";
-                Vector2 center_bottom = {
-                    (static_cast<float>(GetScreenWidth()) / 2.0f),
-                    static_cast<float>(GetScreenHeight() - 100)
-                };
+                Vector2 center_bottom = {(static_cast<float>(GetScreenWidth()) / 2.0f),
+                                         static_cast<float>(GetScreenHeight() - 100)};
                 Vector2 text_size = MeasureTextEx(render_resources.map_font, text.c_str(), 32.0, 0.0f);
                 Vector2 text_position =
                         Vector2Subtract(center_bottom, Vector2Divide(text_size, {.x = 2.0f, .y = 2.0f}));
