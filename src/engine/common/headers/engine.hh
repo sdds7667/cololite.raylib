@@ -1,7 +1,7 @@
 
 #pragma once
 #include "engine_settings.hh"
-#include "map.hh"
+#include "../../../game/headers/map.hh"
 
 namespace Engine {
     enum class AnimationValue {

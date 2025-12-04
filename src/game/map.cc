@@ -1,11 +1,11 @@
 
-#include "map.hh"
+#include "headers/map.hh"
 #include <algorithm>
 #include <random>
 #include <unordered_map>
 #include <utility>
 
-#include "coords.hh"
+#include "headers/coords.hh"
 
 namespace Map {
     bool MapBounds::is_within_bounds(const HexCoord2 &coord) const {

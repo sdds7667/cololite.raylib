@@ -1,5 +1,5 @@
 
-#include "coords.hh"
+#include "headers/coords.hh"
 #include <ostream>
 #include <stdexcept>
 #include <string>

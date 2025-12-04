@@ -4,7 +4,7 @@
 
 #ifndef COLOLITE_ENGINE_SETTINGS_HH
 #define COLOLITE_ENGINE_SETTINGS_HH
-#include "map.hh"
+#include "../../../game/headers/map.hh"
 #include "raylib.h"
 
 namespace Engine {

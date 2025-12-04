@@ -2,7 +2,7 @@
 // Created by Ion Plamadeala on 14/11/2025.
 //
 
-#include "game_sequence.hh"
+#include "headers/game_sequence.hh"
 
 
 namespace Game {

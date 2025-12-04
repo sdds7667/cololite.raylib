@@ -2,9 +2,9 @@
 // Created by Ion Plamadeala on 13/11/2025.
 //
 
-#include "actor.hh"
+#include "headers/actor.hh"
 
-#include "engine_settings.hh"
+#include "headers/engine_settings.hh"
 #include "raylib.h"
 #include "raymath.h"
 

@@ -7,10 +7,10 @@
 #include <raylib.h>
 #include <unordered_map>
 #include <vector>
-#include "generic_actors.hh"
+#include "../../headers/generic_actors.hh"
 
 #include "engine_settings.hh"
-#include "map.hh"
+#include "../../../game/headers/map.hh"
 
 namespace Engine {
     class FixedSizedTextActor : public BoundedBoxActor {

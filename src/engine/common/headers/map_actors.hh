@@ -7,7 +7,7 @@
 
 #include "actor.hh"
 #include "animations.hh"
-#include "map.hh"
+#include "../../../game/headers/map.hh"
 #include "raylib.h"
 #include "engine_settings.hh"
 

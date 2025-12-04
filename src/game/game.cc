@@ -1,5 +1,5 @@
 
-#include "game.hh"
+#include "headers/game.hh"
 
 Roll::Roll(int roll) : roll(roll) {
 };
