@@ -2,7 +2,7 @@
 // Created by Ion Plamadeala on 13/11/2025.
 //
 
-#include "headers/animations.hh"
+#include "animations.hh"
 
 #include <algorithm>
 

@@ -69,9 +69,6 @@ enable_testing()
 
 ## Internal Libraries
 add_subdirectory(src/main)
-add_subdirectory(src/map)
+add_subdirectory(src/game)
 add_subdirectory(src/engine)
-if (APPLE)
-    add_subdirectory(src/macosspecific)
-endif ()
 add_subdirectory(src/utils)

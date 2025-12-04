@@ -15,7 +15,7 @@ target_include_directories(engine PUBLIC headers)
 target_link_libraries(engine PUBLIC game raylib utils)
 
 if (APPLE)
-    target_link_libraries(engine PUBLIC macosspecific)
+    target_link_libraries(engine PUBLIC macos)
 endif ()
 
 ## Map Tests

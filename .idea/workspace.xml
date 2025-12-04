@@ -22,18 +22,15 @@
   </component>
   <component name="CMakeRunConfigurationManager">
     <generated>
-      <config projectName="cololite" targetName="ut_map_bounds" />
       <config projectName="cololite" targetName="raylib" />
       <config projectName="cololite" targetName="glfw" />
-      <config projectName="cololite" targetName="map_hex_coord_2_unit_tests" />
+      <config projectName="cololite" targetName="game" />
+      <config projectName="cololite" targetName="macos" />
       <config projectName="cololite" targetName="cololite" />
-      <config projectName="cololite" targetName="hex_map_creation" />
       <config projectName="cololite" targetName="gmock_main" />
-      <config projectName="cololite" targetName="macosspecific" />
       <config projectName="cololite" targetName="gmock" />
       <config projectName="cololite" targetName="update_mappings" />
       <config projectName="cololite" targetName="gtest" />
-      <config projectName="cololite" targetName="map" />
       <config projectName="cololite" targetName="uninstall" />
       <config projectName="cololite" targetName="engine" />
       <config projectName="cololite" targetName="utils" />
@@ -47,14 +44,46 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ce1b1433-5376-4e80-9a05-f7da3f526e7e" name="Changes" comment="Cleaning up">
-      <change afterPath="$PROJECT_DIR$/src/engine/generic_actors.cc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/engine/headers/generic_actors.hh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/engine/common/CMakeLists.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/engine/common/engine_core.cc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/engine/common/headers/engine_core.hh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/engine/common/headers/scene.hh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/game/CMakeLists.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/engine/actor.cc" beforeDir="false" afterPath="$PROJECT_DIR$/src/engine/actor.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/engine/engine.cc" beforeDir="false" afterPath="$PROJECT_DIR$/src/engine/engine.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/engine/headers/actor.hh" beforeDir="false" afterPath="$PROJECT_DIR$/src/engine/headers/actor.hh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/engine/headers/map_actors.hh" beforeDir="false" afterPath="$PROJECT_DIR$/src/engine/headers/map_actors.hh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/engine/map_actors.cc" beforeDir="false" afterPath="$PROJECT_DIR$/src/engine/map_actors.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/engine/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/engine/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/engine/actor.cc" beforeDir="false" afterPath="$PROJECT_DIR$/src/engine/common/actor.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/engine/animations.cc" beforeDir="false" afterPath="$PROJECT_DIR$/src/engine/common/animations.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/engine/engine.cc" beforeDir="false" afterPath="$PROJECT_DIR$/src/engine/common/engine.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/engine/generic_actors.cc" beforeDir="false" afterPath="$PROJECT_DIR$/src/engine/common/generic_actors.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/engine/headers/actor.hh" beforeDir="false" afterPath="$PROJECT_DIR$/src/engine/common/headers/actor.hh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/engine/headers/animations.hh" beforeDir="false" afterPath="$PROJECT_DIR$/src/engine/common/headers/animations.hh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/engine/headers/engine.hh" beforeDir="false" afterPath="$PROJECT_DIR$/src/engine/common/headers/engine.hh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/engine/headers/engine_hash.hh" beforeDir="false" afterPath="$PROJECT_DIR$/src/engine/common/headers/engine_hash.hh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/engine/headers/engine_settings.hh" beforeDir="false" afterPath="$PROJECT_DIR$/src/engine/common/headers/engine_settings.hh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/engine/headers/generic_actors.hh" beforeDir="false" afterPath="$PROJECT_DIR$/src/engine/common/headers/generic_actors.hh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/engine/headers/map_actors.hh" beforeDir="false" afterPath="$PROJECT_DIR$/src/engine/common/headers/map_actors.hh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/engine/map_actors.cc" beforeDir="false" afterPath="$PROJECT_DIR$/src/engine/common/map_actors.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/engine/tests/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/macosspecific/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/macosspecific/headers/screensize.hh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/macosspecific/screensize.mm" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/cololite.cc" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/cololite.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/map/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/map/coords.cc" beforeDir="false" afterPath="$PROJECT_DIR$/src/game/coords.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/map/game.cc" beforeDir="false" afterPath="$PROJECT_DIR$/src/game/game.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/map/game_sequence.cc" beforeDir="false" afterPath="$PROJECT_DIR$/src/game/game_sequence.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/map/headers/coords.hh" beforeDir="false" afterPath="$PROJECT_DIR$/src/game/headers/coords.hh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/map/headers/coords_hash.hh" beforeDir="false" afterPath="$PROJECT_DIR$/src/game/headers/coords_hash.hh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/map/headers/game.hh" beforeDir="false" afterPath="$PROJECT_DIR$/src/game/headers/game.hh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/map/headers/game_sequence.hh" beforeDir="false" afterPath="$PROJECT_DIR$/src/game/headers/game_sequence.hh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/map/headers/map.hh" beforeDir="false" afterPath="$PROJECT_DIR$/src/game/headers/map.hh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/map/map.cc" beforeDir="false" afterPath="$PROJECT_DIR$/src/game/map.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/map/tests/CMakeLists.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/map/tests/hex_coord_2_unit_tests.cc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/map/tests/hex_map_creation.cc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/map/tests/ut_map_bounds.cc" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -147,7 +176,7 @@
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
     "git-widget-placeholder": "main",
     "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "/Users/iplamade/Work/GameDev/cololite-raylib-cmake/src/resources/sprites/resources",
+    "last_opened_file_path": "/Users/iplamade/Work/GameDev/cololite-raylib-cmake/src/game",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -160,38 +189,26 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/game" />
       <recent name="$PROJECT_DIR$/src/resources/sprites/resources" />
       <recent name="$PROJECT_DIR$/src/resources" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/engine/common/headers" />
+      <recent name="$PROJECT_DIR$/src/engine/common" />
+      <recent name="$PROJECT_DIR$/src/game" />
+      <recent name="$PROJECT_DIR$/src/game/headers" />
       <recent name="$PROJECT_DIR$/src/resources/sprites" />
-      <recent name="$PROJECT_DIR$/src/resources/sprites/resources" />
-      <recent name="$PROJECT_DIR$/src/resources/sprites/ui" />
-      <recent name="$PROJECT_DIR$/src/resources/sprites/resources/" />
-      <recent name="$PROJECT_DIR$/src/map" />
     </key>
   </component>
   <component name="RunManager" selected="CMake Application.cololite">
-    <configuration name="hex_map_creation" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="cololite" TARGET_NAME="hex_map_creation" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="cololite" RUN_TARGET_NAME="hex_map_creation" TEST_MODE="SUITE_TEST">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-        <option name="BeforeTestRunTask" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="map_hex_coord_2_unit_tests" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="cololite" TARGET_NAME="map_hex_coord_2_unit_tests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="cololite" RUN_TARGET_NAME="map_hex_coord_2_unit_tests" TEST_MODE="SUITE_TEST">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-        <option name="BeforeTestRunTask" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="ut_map_bounds" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="cololite" TARGET_NAME="ut_map_bounds" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="cololite" RUN_TARGET_NAME="ut_map_bounds" TEST_MODE="SUITE_TEST">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-        <option name="BeforeTestRunTask" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="cololite" type="CMakeListConfigurationType" factoryName="CMakeListConfigurationFactory" temporary="true">
       <method v="2" />
+    </configuration>
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
     </configuration>
     <configuration name="cololite" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="cololite" TARGET_NAME="cololite" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="cololite" RUN_TARGET_NAME="cololite">
       <method v="2">
@@ -199,6 +216,11 @@
       </method>
     </configuration>
     <configuration name="engine" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="cololite" TARGET_NAME="engine" CONFIG_NAME="Debug">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="game" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="cololite" TARGET_NAME="game" CONFIG_NAME="Debug">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -228,12 +250,7 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="macosspecific" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="cololite" TARGET_NAME="macosspecific" CONFIG_NAME="Debug">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="map" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="cololite" TARGET_NAME="map" CONFIG_NAME="Debug">
+    <configuration name="macos" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="cololite" TARGET_NAME="macos" CONFIG_NAME="Debug">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -261,21 +278,18 @@
     <list>
       <item itemvalue="CMake Application.cololite" />
       <item itemvalue="CMake Application.engine" />
+      <item itemvalue="CMake Application.macos" />
+      <item itemvalue="CMake Application.game" />
       <item itemvalue="CMake Application.glfw" />
       <item itemvalue="CMake Application.gmock" />
       <item itemvalue="CMake Application.gmock_main" />
       <item itemvalue="CMake Application.gtest" />
       <item itemvalue="CMake Application.gtest_main" />
-      <item itemvalue="CMake Application.macosspecific" />
-      <item itemvalue="CMake Application.map" />
       <item itemvalue="CMake Application.raylib" />
       <item itemvalue="CMake Application.uninstall" />
       <item itemvalue="CMake Application.update_mappings" />
       <item itemvalue="CMake Application.utils" />
       <item itemvalue="CMake Debug.cololite" />
-      <item itemvalue="Google Test.hex_map_creation" />
-      <item itemvalue="Google Test.map_hex_coord_2_unit_tests" />
-      <item itemvalue="Google Test.ut_map_bounds" />
     </list>
     <recent_temporary>
       <list>
@@ -427,14 +441,9 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/map/headers/game.hh</url>
+          <url>file://$PROJECT_DIR$/src/game/headers/game.hh</url>
           <line>9</line>
           <option name="timeStamp" value="14" />
-        </line-breakpoint>
-        <line-breakpoint type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/engine/engine.cc</url>
-          <line>468</line>
-          <option name="timeStamp" value="25" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/src/map/tests/hex_map_creation.cc</url>
@@ -443,27 +452,22 @@
         </line-breakpoint>
         <line-breakpoint type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <condition expression="normalized_corner_coord.hex_coord.q == 0 &amp;&amp; normalized_corner_coord.hex_coord.r == 0 &amp;&amp; normalized_corner_coord.corner_direction == Map::HexCornerDirection::RIGHT" language="C++" mode="CODE_FRAGMENT" />
-          <url>file://$PROJECT_DIR$/src/map/map.cc</url>
+          <url>file://$PROJECT_DIR$/src/game/map.cc</url>
           <line>182</line>
           <option name="timeStamp" value="28" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/engine/engine.cc</url>
-          <line>157</line>
-          <option name="timeStamp" value="29" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/engine/actor.cc</url>
+          <url>file://$PROJECT_DIR$/src/engine/common/actor.cc</url>
           <line>116</line>
           <option name="timeStamp" value="32" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/engine/actor.cc</url>
+          <url>file://$PROJECT_DIR$/src/engine/common/actor.cc</url>
           <line>75</line>
           <option name="timeStamp" value="33" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/engine/generic_actors.cc</url>
+          <url>file://$PROJECT_DIR$/src/engine/common/generic_actors.cc</url>
           <line>83</line>
           <option name="timeStamp" value="34" />
         </line-breakpoint>

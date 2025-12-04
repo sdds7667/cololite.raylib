@@ -1,11 +1,11 @@
-#include "headers/engine.hh"
+#include "engine.hh"
 #include <iostream>
 #include <random>
 #include <ranges>
-#include "headers/actor.hh"
-#include "../../game/headers/game_sequence.hh"
+#include "actor.hh"
+#include "game_sequence.hh"
 #include "map.hh"
-#include "headers/map_actors.hh"
+#include "map_actors.hh"
 #include "raylib.h"
 #include "raymath.h"
 #include "screensize.hh"
