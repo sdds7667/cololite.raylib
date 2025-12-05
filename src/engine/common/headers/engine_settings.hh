@@ -66,6 +66,7 @@ namespace Engine {
 
     class EngineSettingsSingleton {
         EngineSettingsSingleton();
+
         ColorScheme m_color_scheme;
         RenderResources m_render_resources;
         RenderSettings m_render_settings;
@@ -73,14 +74,23 @@ namespace Engine {
 
     public:
         EngineSettingsSingleton(const EngineSettingsSingleton &) = delete;
+
         auto operator=(const EngineSettingsSingleton &) -> EngineSettingsSingleton & = delete;
-        static auto get_instance() -> EngineSettingsSingleton &;
+
         void set_scene(Scene *scene);
+
         [[nodiscard]] auto get_current_scene() const -> Scene *;
+
         [[nodiscard]] auto get_color_scheme() const -> const ColorScheme &;
+
         [[nodiscard]] auto get_render_resources() const -> const RenderResources &;
+
         [[nodiscard]] auto get_render_settings() const -> const RenderSettings &;
+
+        friend auto get_engine_settings() -> EngineSettingsSingleton &;
     };
+
+    auto get_engine_settings() -> EngineSettingsSingleton &;
 } // namespace Engine
 
 #endif // COLOLITE_ENGINE_SETTINGS_HH
