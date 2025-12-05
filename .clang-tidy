@@ -1,4 +1,4 @@
-Checks: '-*,modernize-*,readability-*,performance-*,bugprone-*,cppcoreguidelines-*'
+Checks: '-*,modernize-*,readability-*,performance-*,bugprone-*,cppcoreguidelines-*,-misc-non-private-member-variables-in-classes'
 WarningsAsErrors: ''
 HeaderFilterRegex: '.*'
 FormatStyle: 'file'
@@ -13,3 +13,5 @@ CheckOptions:
     value: lower_case
   - key: readability-identifier-naming.LocalConstantPointerCase
     value: lower_case
+  - key:
+    value: '0'

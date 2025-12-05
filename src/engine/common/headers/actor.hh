@@ -76,8 +76,6 @@ namespace Engine {
 
         SpriteActor(const Texture2D &texture, Vector2 position, AlignmentAnchor anchor = AlignmentAnchor::TOP_LEFT);
 
-        void set_position(const Vector2 &position) override;
-
         virtual void set_scale(float scale);
 
         [[nodiscard]] virtual float get_scale() const;

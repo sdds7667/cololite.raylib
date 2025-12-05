@@ -19,10 +19,19 @@ namespace Engine {
     void IClickableActor::on_mouse_released(const Vector2 &mouse_position) {
     }
 
-    auto BoundedBoxActor::get_position() const -> const Vector2 & { return m_position; }
+    auto PositionedActor::get_position() const -> Vector2 const & {
+        return m_position;
+    }
+
+    void PositionedActor::set_position(const Vector2 &position) { m_position = position; }
+
+    void BoundedBoxActor::update_bounding_box() {
+        m_bounding_box.x = get_position().x - m_anchor.x * m_bounding_box.width;
+        m_bounding_box.y = get_position().y - m_anchor.y * m_bounding_box.height;
+    }
 
     auto BoundedBoxActor::get_anchored_position() const -> Vector2 {
-        return Vector2Subtract(m_position, Vector2Multiply(m_anchor, get_size()));
+        return Vector2Subtract(get_position(), Vector2Multiply(m_anchor, get_size()));
     }
 
     Vector2 BoundedBoxActor::get_size() const { return {.x = m_bounding_box.width, .y = m_bounding_box.height}; }
@@ -67,9 +76,9 @@ namespace Engine {
     void BoundedBoxActor::set_bounding_box(const Rectangle &bounding_box) { m_bounding_box = bounding_box; }
 
     void BoundedBoxActor::set_position(const Vector2 &position) {
-        m_position = position;
-        m_bounding_box.x = m_position.x - m_anchor.x * m_bounding_box.width;
-        m_bounding_box.y = m_position.y - m_anchor.y * m_bounding_box.height;
+        PositionedActor::set_position(position);
+        m_bounding_box.x = get_position().x - m_anchor.x * m_bounding_box.width;
+        m_bounding_box.y = get_position().y - m_anchor.y * m_bounding_box.height;
     }
 
     const Rectangle &BoundedBoxActor::get_bounding_box() const { return m_bounding_box; }

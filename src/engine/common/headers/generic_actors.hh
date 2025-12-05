@@ -17,7 +17,6 @@ namespace stdr = std::ranges;
 namespace stdv = std::ranges::views;
 
 namespace Engine {
-
     enum class RenderLayer : std::uint8_t {
         UNDEFINED = 0,
         MAP_TERRAIN,
@@ -182,18 +181,26 @@ namespace Engine {
         BOTTOM_RIGHT,
     };
 
-    class BoundedBoxActor : public IActor, public IClickableActor {
+    class PositionedActor : public IActor {
+        Vector2 m_position{};
+
+    public:
+        [[nodiscard]] virtual auto get_position() const -> Vector2 const &;
+
+        virtual void set_position(const Vector2 &position);
+    };
+
+    class BoundedBoxActor : public PositionedActor, public IClickableActor {
     protected:
         Vector2 m_anchor{};
-        Vector2 m_position{};
         Rectangle m_bounding_box{};
 
         bool m_is_mouse_inside = false;
 
+        void update_bounding_box();
+
     public:
         ~BoundedBoxActor() override = default;
-
-        [[nodiscard]] virtual const Vector2 &get_position() const;
 
         [[nodiscard]] virtual Vector2 get_anchored_position() const;
 
@@ -207,7 +214,7 @@ namespace Engine {
 
         virtual void set_bounding_box(const Rectangle &bounding_box);
 
-        virtual void set_position(const Vector2 &position);
+        void set_position(const Vector2 &position) override;
 
         [[nodiscard]] virtual const Rectangle &get_bounding_box() const;
 

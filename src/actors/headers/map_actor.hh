@@ -7,8 +7,7 @@
 using namespace Engine;
 
 namespace GameActors {
-    class MapActor : public IActor, IClickableActor {
-
+    class MapActor final : public IActor, IClickableActor {
     public:
         MapActor(Map::Map &map);
 
