@@ -61,7 +61,6 @@ namespace Engine {
     };
 
     class LayeredContainer {
-    private:
         std::array<std::vector<IActor *>, static_cast<size_t>(RenderLayer::COUNT)> layers;
 
     public:
@@ -188,6 +187,10 @@ namespace Engine {
         [[nodiscard]] virtual auto get_position() const -> Vector2 const &;
 
         virtual void set_position(const Vector2 &position);
+
+        PositionedActor() = default;
+
+        explicit PositionedActor(const Vector2 &position);
     };
 
     class BoundedBoxActor : public PositionedActor, public IClickableActor {

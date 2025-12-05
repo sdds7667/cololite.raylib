@@ -62,7 +62,6 @@ namespace Engine {
         float full_hex_size;
     };
 
-    const Texture2D &get_texture_for_resource(const RenderResources &render_resources, const Map::Resource &resource);
 
     class EngineSettingsSingleton {
         EngineSettingsSingleton();
@@ -91,6 +90,10 @@ namespace Engine {
     };
 
     auto get_engine_settings() -> EngineSettingsSingleton &;
+
+    auto get_color_for_resource(const Map::Resource &resource) -> Color;
+
+    const Texture2D &get_texture_for_resource(const Map::Resource &resource);
 } // namespace Engine
 
 #endif // COLOLITE_ENGINE_SETTINGS_HH

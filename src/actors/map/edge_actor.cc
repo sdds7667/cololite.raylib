@@ -6,14 +6,10 @@
 #include "raymath.h"
 
 namespace GameActors {
-    EdgeActor::EdgeActor(
-        const RenderSettings &render_settings,
-        const RenderResources &render_resources,
-        const ColorScheme &color_scheme,
-        Map::Edge *edge, const Map::EdgeCoord &nominal_edge_coord, const Vector2 &position)
-        : render_settings(render_settings), render_resources(render_resources), color_scheme(color_scheme),
-          edge(edge),
-          nominal_edge_coord(nominal_edge_coord), position(position), is_highlighted(false) {
+    EdgeActor::EdgeActor(Map::Edge *edge, const Map::EdgeCoord &nominal_edge_coord,
+                         const Vector2 &position) : edge(edge),
+                                                    nominal_edge_coord(nominal_edge_coord), position(position),
+                                                    is_highlighted(false) {
     }
 
     void EdgeActor::update(const float delta_time) {
@@ -42,8 +38,11 @@ namespace GameActors {
     }
 
     void EdgeActor::render() const {
-        const float dir = static_cast<float>(nominal_edge_coord.edge_direction);
-        const float move_dir = (PI / 3.0f) * (dir + 2.0);
+        const auto &engine_settings = get_engine_settings();
+        const auto &color_scheme = engine_settings.get_color_scheme();
+        const auto &render_settings = engine_settings.get_render_settings();
+        const auto dir = static_cast<float>(nominal_edge_coord.edge_direction);
+        const float move_dir = PI / 3.0f * (dir + 2.0);
         const float width = render_settings.full_hex_size - 1.80f * render_settings.hex_size * 1.0f / 3.0f;
         const float starting_delta = render_settings.hex_size * 0.90f / 3.0f;
         Rectangle rectangle{
@@ -104,6 +103,7 @@ namespace GameActors {
     }
 
     bool EdgeActor::is_mouse_over(const Vector2 &mouse_position) {
+        const auto &render_settings = get_engine_settings().get_render_settings();
         const float dir = static_cast<float>(nominal_edge_coord.edge_direction);
         const float move_dir = (PI / 3.0f) * (dir + 2.0);
         const float width = render_settings.full_hex_size - 1.80f * render_settings.hex_size * 1.0f / 3.0f;

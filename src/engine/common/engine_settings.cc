@@ -64,6 +64,45 @@ namespace Engine {
         return instance;
     }
 
+    auto get_color_for_resource(const Map::Resource &resource) -> Color {
+        const auto &color_scheme = get_engine_settings().get_color_scheme();
+        switch (resource) {
+            case Map::Resource::BRICK:
+                return color_scheme.brickRed;
+            case Map::Resource::NONE:
+                return color_scheme.desertSand;
+            case Map::Resource::SHEEP:
+                return color_scheme.grassGreen;
+            case Map::Resource::WHEAT:
+                return color_scheme.wheatYellow;
+            case Map::Resource::STONE:
+                return color_scheme.stoneGray;
+            case Map::Resource::WOOD:
+                return color_scheme.warmWoodBrown;
+        }
+        return BLACK;
+    }
+
+    auto get_texture_for_resource(const Map::Resource &resource)
+        -> const Texture2D & {
+        const auto &render_resources = get_engine_settings().get_render_resources();
+        switch (resource) {
+            case Map::Resource::BRICK:
+                return render_resources.resource_sprites.bricks;
+            case Map::Resource::NONE:
+                return render_resources.resource_sprites.cactus;
+            case Map::Resource::SHEEP:
+                return render_resources.resource_sprites.sheep;
+            case Map::Resource::WHEAT:
+                return render_resources.resource_sprites.wheat;
+            case Map::Resource::STONE:
+                return render_resources.resource_sprites.stone;
+            case Map::Resource::WOOD:
+                return render_resources.resource_sprites.wood;
+        }
+        return render_resources.resource_sprites.cactus;
+    }
+
     auto EngineSettingsSingleton::get_color_scheme() const -> const ColorScheme & { return m_color_scheme; }
 
     auto EngineSettingsSingleton::get_render_resources() const -> const RenderResources & {

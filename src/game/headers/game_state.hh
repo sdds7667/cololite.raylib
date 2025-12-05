@@ -5,8 +5,8 @@
 #include "game.hh"
 #include "game_sequence.hh"
 #include "map.hh"
-namespace Game {
 
+namespace Game {
     struct RollManager {
         std::deque<Roll> rolls_queue;
         std::vector<Roll> discard_pile;
@@ -24,12 +24,15 @@ namespace Game {
         PlayerResources m_player_resources;
         Map::Map m_map;
         Map::Corner *m_last_built_corner = nullptr;
-        GameState(Map::Map map);
+
+        explicit GameState(Map::Map map);
 
     public:
         // Trade
         auto can_trade(Map::Resource &resource_to_be_sold) const -> bool;
+
         auto can_trade(Map::Resource &resource_to_be_sold, Map::Resource &resource_to_be_bought) const -> int;
+
         void apply_trade(Map::Resource &resource_to_be_sold, Map::Resource &resource_to_be_bought, int quantity);
 
         [[nodiscard]] auto get_map() const -> const Map::Map &;
@@ -38,6 +41,4 @@ namespace Game {
     };
 
     auto get_game_state() -> GameState &;
-
-
 } // namespace Game

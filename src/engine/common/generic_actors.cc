@@ -25,6 +25,9 @@ namespace Engine {
 
     void PositionedActor::set_position(const Vector2 &position) { m_position = position; }
 
+    PositionedActor::PositionedActor(const Vector2 &position) : m_position(position) {
+    }
+
     void BoundedBoxActor::update_bounding_box() {
         m_bounding_box.x = get_position().x - m_anchor.x * m_bounding_box.width;
         m_bounding_box.y = get_position().y - m_anchor.y * m_bounding_box.height;

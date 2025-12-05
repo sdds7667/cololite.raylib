@@ -7,9 +7,6 @@ using namespace Engine;
 
 namespace GameActors {
     class EdgeActor final : public IActor, public IClickableActor {
-        const RenderSettings &render_settings;
-        const RenderResources &render_resources;
-        const ColorScheme &color_scheme;
         Map::Edge *edge;
         Map::EdgeCoord nominal_edge_coord;
         Vector2 position;
@@ -25,11 +22,7 @@ namespace GameActors {
         AnimationContainer<EdgeActorAnimations> animations{};
 
     public:
-        EdgeActor(
-            const RenderSettings &render_settings,
-            const RenderResources &render_resources,
-            const ColorScheme &color_scheme,
-            Map::Edge *edge, const Map::EdgeCoord &nominal_edge_coord, const Vector2 &position);
+        EdgeActor(Map::Edge *edge, const Map::EdgeCoord &nominal_edge_coord, const Vector2 &position);
 
         void update(float delta_time) override;
 

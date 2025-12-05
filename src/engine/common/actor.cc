@@ -152,7 +152,7 @@ namespace Engine {
                  Map::Resource::WHEAT, Map::Resource::STONE
              }) {
             auto &outline_texture = render_resources.resource_sprites.resource_outline;
-            const auto &texture = get_texture_for_resource(render_resources, resource);
+            const auto &texture = get_texture_for_resource(resource);
             float scale = texture_width / static_cast<float>(texture.width);
 
             auto *sprite_actor = new SpriteActor(texture, Vector2Zero(), AlignmentAnchor::MIDDLE_CENTER);
@@ -280,7 +280,7 @@ namespace Engine {
                 constexpr float texture_width = 64.0f;
 
                 auto outline_texture = resources.resource_sprites.resource_outline;
-                auto resource_texture = get_texture_for_resource(resources, resource);
+                auto resource_texture = get_texture_for_resource(resource);
                 float scale = (texture_width) / resource_texture.width;
                 auto *outline_actor = new SpriteActor(outline_texture, Vector2Zero(), AlignmentAnchor::MIDDLE_CENTER);
                 outline_actor->set_scale(scale * 1.5f);
