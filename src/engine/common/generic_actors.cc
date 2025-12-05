@@ -19,8 +19,6 @@ namespace Engine {
     void IClickableActor::on_mouse_released(const Vector2 &mouse_position) {
     }
 
-    void IClickableActor::on_mouse_released(const Vector2 &mouse_position) {}
-
     auto BoundedBoxActor::get_position() const -> const Vector2 & { return m_position; }
 
     auto BoundedBoxActor::get_anchored_position() const -> Vector2 {
@@ -62,7 +60,7 @@ namespace Engine {
             case AlignmentAnchor::BOTTOM_RIGHT:
                 m_anchor = {1.0f, 1.0f};
                 break;
-            default:;
+            default: ;
         }
     }
 
@@ -88,9 +86,11 @@ namespace Engine {
         return is_mouse_inside;
     }
 
-    void BoundedBoxActor::update(float deltaTime) {}
+    void BoundedBoxActor::update(float deltaTime) {
+    }
 
-    void BoundedBoxActor::render() const {}
+    void BoundedBoxActor::render() const {
+    }
 
 
     [[nodiscard]] auto IActor::get_z_index() const -> RenderLayer { return m_z_index; }
