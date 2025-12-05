@@ -28,9 +28,11 @@
       <config projectName="cololite" targetName="macos" />
       <config projectName="cololite" targetName="cololite" />
       <config projectName="cololite" targetName="gmock_main" />
+      <config projectName="cololite" targetName="layered_container_tests" />
       <config projectName="cololite" targetName="gmock" />
       <config projectName="cololite" targetName="update_mappings" />
       <config projectName="cololite" targetName="gtest" />
+      <config projectName="cololite" targetName="game_actors" />
       <config projectName="cololite" targetName="uninstall" />
       <config projectName="cololite" targetName="engine" />
       <config projectName="cololite" targetName="utils" />
@@ -44,10 +46,27 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ce1b1433-5376-4e80-9a05-f7da3f526e7e" name="Changes" comment="Cleaning up">
-      <change beforePath="$PROJECT_DIR$/src/engine/common/engine.cc" beforeDir="false" afterPath="$PROJECT_DIR$/src/engine/common/engine.cc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dictionaries/project.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/actors/map/corner_actor.cc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/actors/map/edge_actor.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/actors/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/actors/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/actors/headers/corner_actor.hh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/actors/headers/map_actors.hh" beforeDir="false" afterPath="$PROJECT_DIR$/src/actors/headers/map_actors.hh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/actors/map/headers/corner_actor.hh" beforeDir="false" afterPath="$PROJECT_DIR$/src/actors/map/headers/corner_actor.hh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/actors/map/headers/edge_actor.hh" beforeDir="false" afterPath="$PROJECT_DIR$/src/actors/map/headers/edge_actor.hh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/actors/map/headers/hex_actor.hh" beforeDir="false" afterPath="$PROJECT_DIR$/src/actors/map/headers/hex_actor.hh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/actors/map/headers/map_actor.hh" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/actors/map_actor.cc" beforeDir="false" afterPath="$PROJECT_DIR$/src/actors/map/map_actor.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/actors/map_actors.cc" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/engine/common/engine_core.cc" beforeDir="false" afterPath="$PROJECT_DIR$/src/engine/common/engine_core.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/engine/common/headers/engine_core.hh" beforeDir="false" afterPath="$PROJECT_DIR$/src/engine/common/headers/engine_core.hh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/engine/common/engine_settings.cc" beforeDir="false" afterPath="$PROJECT_DIR$/src/engine/common/engine_settings.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/engine/common/generic_actors.cc" beforeDir="false" afterPath="$PROJECT_DIR$/src/engine/common/generic_actors.cc" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/engine/common/headers/engine_settings.hh" beforeDir="false" afterPath="$PROJECT_DIR$/src/engine/common/headers/engine_settings.hh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/engine/common/headers/generic_actors.hh" beforeDir="false" afterPath="$PROJECT_DIR$/src/engine/common/headers/generic_actors.hh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/engine/common/tests/layered_container_tests.cc" beforeDir="false" afterPath="$PROJECT_DIR$/src/engine/common/tests/layered_container_tests.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/cololite.cc" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/cololite.cc" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -121,36 +140,37 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;CMake Application.cololite.executor&quot;: &quot;Run&quot;,
-    &quot;CMake Debug.cololite.executor&quot;: &quot;Debug&quot;,
-    &quot;Google Test.hex_map_creation.executor&quot;: &quot;Run&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.RadMigrateCodeStyle&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.west.config.association.type.startup.service&quot;: &quot;true&quot;,
-    &quot;cf.advertisement.text.overridden&quot;: &quot;true&quot;,
-    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
-    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/iplamade/Work/GameDev/cololite-raylib-cmake/src/game&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;CPPToolchains&quot;,
-    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "CMake Application.cololite.executor": "Run",
+    "CMake Debug.cololite.executor": "Debug",
+    "Google Test.hex_map_creation.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.RadMigrateCodeStyle": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "RunOnceActivity.west.config.association.type.startup.service": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "cf.advertisement.text.overridden": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "git-widget-placeholder": "main",
+    "junie.onboarding.icon.badge.shown": "true",
+    "last_opened_file_path": "/Users/iplamade/Work/GameDev/cololite-raylib-cmake/src/game",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "CPPToolchains",
+    "to.speed.mode.migration.done": "true",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/game" />
@@ -158,16 +178,27 @@
       <recent name="$PROJECT_DIR$/src/resources" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/actors/map" />
       <recent name="$PROJECT_DIR$/src/engine/common/headers" />
       <recent name="$PROJECT_DIR$/src/engine/common" />
       <recent name="$PROJECT_DIR$/src/game" />
       <recent name="$PROJECT_DIR$/src/game/headers" />
-      <recent name="$PROJECT_DIR$/src/resources/sprites" />
     </key>
   </component>
   <component name="RunManager" selected="CMake Application.cololite">
+    <configuration name="layered_container_tests" type="CMakeGoogleTestRunConfigurationType" factoryName="Google Test" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="cololite" TARGET_NAME="layered_container_tests" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="cololite" RUN_TARGET_NAME="layered_container_tests" TEST_MODE="SUITE_TEST">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+        <option name="BeforeTestRunTask" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="cololite" type="CMakeListConfigurationType" factoryName="CMakeListConfigurationFactory" temporary="true">
       <method v="2" />
+    </configuration>
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
     </configuration>
     <configuration name="cololite" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="cololite" TARGET_NAME="cololite" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="cololite" RUN_TARGET_NAME="cololite">
       <method v="2">
@@ -180,6 +211,11 @@
       </method>
     </configuration>
     <configuration name="game" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="cololite" TARGET_NAME="game" CONFIG_NAME="Debug">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="game_actors" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="cololite" TARGET_NAME="game_actors" CONFIG_NAME="Debug">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -235,7 +271,6 @@
       </method>
     </configuration>
     <list>
-      <item itemvalue="CMake Debug.cololite" />
       <item itemvalue="CMake Application.cololite" />
       <item itemvalue="CMake Application.engine" />
       <item itemvalue="CMake Application.game" />
@@ -248,7 +283,10 @@
       <item itemvalue="CMake Application.raylib" />
       <item itemvalue="CMake Application.uninstall" />
       <item itemvalue="CMake Application.update_mappings" />
+      <item itemvalue="CMake Application.game_actors" />
       <item itemvalue="CMake Application.utils" />
+      <item itemvalue="CMake Debug.cololite" />
+      <item itemvalue="Google Test.layered_container_tests" />
     </list>
     <recent_temporary>
       <list>
@@ -282,6 +320,7 @@
       <workItem from="1763722686219" duration="17082000" />
       <workItem from="1763818971861" duration="9544000" />
       <workItem from="1764840595889" duration="12000" />
+      <workItem from="1764928197074" duration="3679000" />
     </task>
     <task id="LOCAL-00001" summary="Cleaning up the code base">
       <option name="closed" value="true" />
@@ -415,21 +454,6 @@
           <url>file://$PROJECT_DIR$/src/game/map.cc</url>
           <line>182</line>
           <option name="timeStamp" value="28" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/engine/common/actor.cc</url>
-          <line>116</line>
-          <option name="timeStamp" value="32" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/engine/common/actor.cc</url>
-          <line>75</line>
-          <option name="timeStamp" value="33" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/src/engine/common/generic_actors.cc</url>
-          <line>83</line>
-          <option name="timeStamp" value="34" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

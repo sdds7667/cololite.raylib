@@ -44,6 +44,7 @@ namespace Engine {
         void set_bucket_index(size_t index);
 
         [[nodiscard]] auto get_z_index() const -> RenderLayer;
+
         void set_z_index(RenderLayer layer);
 
     public:
@@ -56,6 +57,7 @@ namespace Engine {
         [[nodiscard]] auto is_visible() const -> bool;
 
         void set_visible(bool visible);
+
         friend class LayeredContainer;
     };
 

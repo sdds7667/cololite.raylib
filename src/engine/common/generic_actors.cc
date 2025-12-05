@@ -7,11 +7,17 @@
 #include "raymath.h"
 
 namespace Engine {
-    void IClickableActor::on_mouse_entered(const Vector2 &mouse_position) {}
+    void IClickableActor::on_mouse_entered(const Vector2 &mouse_position) {
+    }
 
-    void IClickableActor::on_mouse_exited(const Vector2 &mouse_position) {}
+    void IClickableActor::on_mouse_exited(const Vector2 &mouse_position) {
+    }
 
-    void IClickableActor::on_mouse_pressed(const Vector2 &mouse_position) {}
+    void IClickableActor::on_mouse_pressed(const Vector2 &mouse_position) {
+    }
+
+    void IClickableActor::on_mouse_released(const Vector2 &mouse_position) {
+    }
 
     void IClickableActor::on_mouse_released(const Vector2 &mouse_position) {}
 

@@ -20,22 +20,22 @@ namespace Engine {
         screen_height = screen_size.y;
 #endif
         InitWindow(static_cast<int>(screen_width), static_cast<int>(screen_height), "Cololite");
-        SetTargetFPS(EngineSettingsSingleton::get_instance().get_render_settings().target_fps);
+        SetTargetFPS(get_engine_settings().get_render_settings().target_fps);
     }
 
-    void update(float delta_time) {
-        // Update logic can be added here
-        Scene *current_scene = EngineSettingsSingleton::get_instance().get_current_scene();
-        if (current_scene != nullptr) {
+    void update(const float delta_time) {
+        if (Scene *current_scene = get_engine_settings().get_current_scene(); current_scene != nullptr) {
             current_scene->update_all(delta_time);
         }
     }
 
     void render() {
-        Scene *current_scene = EngineSettingsSingleton::get_instance().get_current_scene();
-        if (current_scene != nullptr) {
+        BeginDrawing();
+        ClearBackground(WHITE);
+        if (const Scene *current_scene = get_engine_settings().get_current_scene(); current_scene != nullptr) {
             current_scene->render_all();
         }
+        EndDrawing();
     }
 
     void terminate() { CloseWindow(); }
