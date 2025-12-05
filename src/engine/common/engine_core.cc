@@ -27,18 +27,14 @@ namespace Engine {
         // Update logic can be added here
         Scene *current_scene = EngineSettingsSingleton::get_instance().get_current_scene();
         if (current_scene != nullptr) {
-            for (auto *const actor: current_scene->actors) {
-                actor->update(delta_time);
-            }
+            current_scene->update_all(delta_time);
         }
     }
 
     void render() {
         Scene *current_scene = EngineSettingsSingleton::get_instance().get_current_scene();
         if (current_scene != nullptr) {
-            for (auto *const actor: current_scene->actors) {
-                actor->render();
-            }
+            current_scene->render_all();
         }
     }
 

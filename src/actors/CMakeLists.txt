@@ -1,22 +1,16 @@
 # Engine library
-add_library(engine SHARED)
+add_library(game_actors SHARED)
 
 file(GLOB SOURCE_FILES CONFIGURE_DEPENDS *.c *.cc)
 file(GLOB HEADER_FILES CONFIGURE_DEPENDS headers/*.h headers/*.hh)
-target_sources(engine PRIVATE ${SOURCE_FILES} ${HEADER_FILES})
+target_sources(game_actors PRIVATE ${SOURCE_FILES} ${HEADER_FILES})
 
 # Export symbols for shared library
-set_target_properties(engine PROPERTIES
+set_target_properties(game_actors PROPERTIES
         CXX_VISIBILITY_PRESET default
         VISIBILITY_INLINES_HIDDEN OFF
 )
 
-target_include_directories(engine PUBLIC headers)
-target_link_libraries(engine PUBLIC game raylib utils)
+target_include_directories(game_actors PUBLIC headers)
+target_link_libraries(game_actors PUBLIC engine )
 
-if (APPLE)
-    target_link_libraries(engine PUBLIC macos)
-endif ()
-
-## Map Tests
-add_subdirectory(tests)

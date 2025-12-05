@@ -15,8 +15,7 @@ namespace Engine {
         BoundedBoxActor::set_position(position);
     }
 
-    void FixedSizedTextActor::update(float deltaTime) {
-    }
+    void FixedSizedTextActor::update(float deltaTime) {}
 
     void FixedSizedTextActor::render() const {
         DrawTextEx(m_font, m_text.c_str(), {m_bounding_box.x, m_bounding_box.y}, m_font_size, 0.0f, m_color);
@@ -37,10 +36,8 @@ namespace Engine {
     void ContainerActor::update_children_positions() const {
         for (int i = 0; i < m_actors.size(); i++) {
             auto *actor = m_actors[i];
-            actor->set_position({
-                m_bounding_box.x + m_bounding_box.width * m_actor_relative_positions[i].x,
-                m_bounding_box.y + m_bounding_box.height * m_actor_relative_positions[i].y
-            });
+            actor->set_position({m_bounding_box.x + m_bounding_box.width * m_actor_relative_positions[i].x,
+                                 m_bounding_box.y + m_bounding_box.height * m_actor_relative_positions[i].y});
         }
     }
 
@@ -54,11 +51,9 @@ namespace Engine {
 
     void ContainerActor::update_relative_positions() {
         for (int i = 0; i < m_actors.size(); i++) {
-            m_actor_relative_positions[i] = {
-                (m_actors[i]->get_position().x - m_bounding_box.x) / m_bounding_box.width,
-                (m_actors[i]->get_position().y - m_bounding_box.y) /
-                m_bounding_box.height
-            };
+            m_actor_relative_positions[i] = {(m_actors[i]->get_position().x - m_bounding_box.x) / m_bounding_box.width,
+                                             (m_actors[i]->get_position().y - m_bounding_box.y) /
+                                                     m_bounding_box.height};
         }
     }
 
@@ -103,9 +98,7 @@ namespace Engine {
 
     void ContainerActor::remove_actor(const BoundedBoxActor *actor) { throw std::runtime_error("Not implemented"); }
 
-    void ContainerActor::set_background_color(const std::optional<Color> &color) {
-        m_background_color = color;
-    }
+    void ContainerActor::set_background_color(const std::optional<Color> &color) { m_background_color = color; }
 
 
     void ContainerActor::update(float deltaTime) {
@@ -130,15 +123,12 @@ namespace Engine {
         }
     }
 
-    SpriteActor::SpriteActor(Vector2 position) {
-        BoundedBoxActor::set_position(position);
-    }
+    SpriteActor::SpriteActor(Vector2 position) { BoundedBoxActor::set_position(position); }
 
     SpriteActor::SpriteActor(const Texture2D &texture, Vector2 position, AlignmentAnchor anchor) : texture(texture) {
         SpriteActor::set_anchor(anchor);
-        BoundedBoxActor::set_bounding_box({
-            0.f, 0.f, static_cast<float>(texture.width), static_cast<float>(texture.height)
-        });
+        BoundedBoxActor::set_bounding_box(
+                {0.f, 0.f, static_cast<float>(texture.width), static_cast<float>(texture.height)});
         BoundedBoxActor::set_position(position);
     }
 
@@ -149,16 +139,14 @@ namespace Engine {
     }
 
     ResourceDisplayActor::ResourceDisplayActor(const RenderResources &render_resources,
-                                               const std::unordered_map<Map::Resource, int> &
-                                               player_resources) : ContainerActor(Vector2Zero(), {}) {
+                                               const std::unordered_map<Map::Resource, int> &player_resources) :
+        ContainerActor(Vector2Zero(), {}) {
         std::vector<BoundedBoxActor *> resource_containers;
         float starting_x = 0.0f;
         float starting_y = 0.0f;
         float texture_width = 64.0f;
-        for (const auto resource: {
-                 Map::Resource::WOOD, Map::Resource::BRICK, Map::Resource::SHEEP,
-                 Map::Resource::WHEAT, Map::Resource::STONE
-             }) {
+        for (const auto resource: {Map::Resource::WOOD, Map::Resource::BRICK, Map::Resource::SHEEP,
+                                   Map::Resource::WHEAT, Map::Resource::STONE}) {
             auto &outline_texture = render_resources.resource_sprites.resource_outline;
             const auto &texture = get_texture_for_resource(render_resources, resource);
             float scale = texture_width / static_cast<float>(texture.width);
@@ -173,29 +161,24 @@ namespace Engine {
 
             auto *fixed_sized_text_actor =
                     new FixedSizedTextActor("100", render_resources.map_font, WHITE, 32.0f,
-                                            Vector2{
-                                                starting_x + outline_texture.width * scale * 1.5f + 30,
-                                                starting_y + outline_texture.height * scale * 1.5f / 2.0f
-                                            });
+                                            Vector2{starting_x + outline_texture.width * scale * 1.5f + 30,
+                                                    starting_y + outline_texture.height * scale * 1.5f / 2.0f});
             resource_text_actors[resource] = fixed_sized_text_actor;
             fixed_sized_text_actor->set_anchor(AlignmentAnchor::MIDDLE_CENTER);
 
             auto *resource_delta =
                     new FixedSizedTextActor("+100", render_resources.map_font, WHITE, 32.0f,
-                                            Vector2{
-                                                starting_x + outline_texture.width * scale * 1.5f + 30 * 2 +
-                                                fixed_sized_text_actor->get_size().x,
-                                                starting_y + outline_texture.height * scale * 1.5f / 2.0f
-                                            });
+                                            Vector2{starting_x + outline_texture.width * scale * 1.5f + 30 * 2 +
+                                                            fixed_sized_text_actor->get_size().x,
+                                                    starting_y + outline_texture.height * scale * 1.5f / 2.0f});
             delta_resources_actors[resource] = resource_delta;
             resource_delta->set_anchor(AlignmentAnchor::MIDDLE_CENTER);
             auto bounding_box_actor = new BoundedBoxActor{};
-            Rectangle bounding_box = {
-                .x = 0.0f,
-                .y = 0.0f,
-                .width = resource_delta->get_anchored_position().x + resource_delta->get_size().x - starting_x,
-                .height = outline_texture.height * scale * 1.5f
-            };
+            Rectangle bounding_box = {.x = 0.0f,
+                                      .y = 0.0f,
+                                      .width = resource_delta->get_anchored_position().x +
+                                               resource_delta->get_size().x - starting_x,
+                                      .height = outline_texture.height * scale * 1.5f};
             bounding_box_actor->set_bounding_box(bounding_box);
             bounding_box_actor->set_position(Vector2{starting_x, starting_y});
             resource_bounding_box[resource] = bounding_box_actor;
@@ -304,22 +287,18 @@ namespace Engine {
 
     void SpriteActor::set_scale(float scale) {
         this->m_scale = scale;
-        BoundedBoxActor::set_bounding_box({
-            m_position.x - m_anchor.x * static_cast<float>(texture.width) * m_scale,
-            m_position.y - m_anchor.y * static_cast<float>(texture.height) * m_scale,
-            texture.width * m_scale, texture.height * m_scale
-        });
+        BoundedBoxActor::set_bounding_box({m_position.x - m_anchor.x * static_cast<float>(texture.width) * m_scale,
+                                           m_position.y - m_anchor.y * static_cast<float>(texture.height) * m_scale,
+                                           texture.width * m_scale, texture.height * m_scale});
     }
 
     float SpriteActor::get_scale() const { return m_scale; }
 
-    void SpriteActor::update(float deltaTime) {
-    }
+    void SpriteActor::update(float deltaTime) {}
 
     void SpriteActor::render() const {
-        const Vector2 render_position = {
-            m_position.x - m_anchor.x * static_cast<float>(texture.width) * m_scale,
-            m_position.y - m_anchor.y * static_cast<float>(texture.height) * m_scale
+        const Vector2 render_position = {m_position.x - m_anchor.x * static_cast<float>(texture.width) * m_scale,
+                                         m_position.y - m_anchor.y * static_cast<float>(texture.height) * m_scale
 
         };
         DrawTextureEx(texture, render_position, 0.0f, m_scale, WHITE);

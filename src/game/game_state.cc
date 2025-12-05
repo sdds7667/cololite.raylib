@@ -20,4 +20,7 @@ namespace Game {
     }
 
 
+    void RollManager::initialize_rolls() {};
+
+
 } // namespace Game
